@@ -28,7 +28,8 @@ namespace DotMonkey.LexicalAnalizer.Lexer
 
         private Token NextToken()
         {
-            Token token;
+            var token = new Token();
+            SkipWhitespace();
             if (int.Parse(Ch.ToString()) == 0)
                 token = new Token(Constants.EOF, string.Empty);
 
@@ -42,19 +43,37 @@ namespace DotMonkey.LexicalAnalizer.Lexer
                 '+' => new Token(Constants.PLUS, Ch.ToString()),
                 '{' => new Token(Constants.LBRACE, Ch.ToString()),
                 '}' => new Token(Constants.RBRACE, Ch.ToString()),
-                _ => DefautlPattern()
+                _ => DefautlPattern(token)
             };
 
             ReadChar();
             return token;
 
-            Token DefautlPattern()
+            Token DefautlPattern(Token token)
             {
                 if (char.IsLetter(Ch))
-                    return new Token(string.Empty, ReadIdentifier());
+                    return new Token(token.LookupIdent(), ReadIdentifier());
+
+                if (char.IsDigit(Ch))
+                    return new Token(Constants.INT, ReadNumber());
 
                 return new Token(Constants.ILLEGAL, Ch.ToString());
             }
+        }
+
+        private string ReadNumber()
+        {
+            var position = Position;
+            while (char.IsDigit(Ch))
+                ReadChar();
+
+            return Input[position..Position];
+        }
+
+        private void SkipWhitespace()
+        {
+            while (Ch is ('\t' or '\n' or ' '))
+                ReadChar();
         }
 
         private string ReadIdentifier()
