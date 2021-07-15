@@ -1,4 +1,4 @@
-﻿namespace DotMonkey.LexicalAnalizer.Tokens
+﻿namespace DotMonkey.LexicalAnalizer
 {
     public static class Constants
     {
@@ -8,10 +8,10 @@
         public const string IDENT = nameof(IDENT);
         public const string INT = nameof(INT);
 
-        public const string ASSING = "+";
+        public const string ASSING = "=";
         public const string PLUS = "+";
 
-        public const string COMMA = "-";
+        public const string COMMA = ",";
         public const string SEMICOLON = ";";
 
         public const string LPARENT = "(";

@@ -1,18 +1,22 @@
 ﻿using System.Collections.Generic;
 
-namespace DotMonkey.LexicalAnalizer.Tokens
+namespace DotMonkey.LexicalAnalizer
 {
-    public struct Token
+    public class Token
     {
         public string Type { get; }
-        public string Literal { get; }
+        public string Literal { get; set; }
         public IDictionary<string, string> Keywords { get; }
 
-        public Token(string type, string literal)
+        public Token(string type, string literal) : this()
         {
             Type = type;
             Literal = literal;
 
+        }
+
+        public Token()
+        {
             Keywords = new Dictionary<string, string>
             {
                 {"fn",Constants.FUNCTION },

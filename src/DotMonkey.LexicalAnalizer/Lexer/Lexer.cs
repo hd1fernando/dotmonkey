@@ -1,7 +1,6 @@
-﻿using DotMonkey.LexicalAnalizer.Tokens;
-using System;
+﻿using System;
 
-namespace DotMonkey.LexicalAnalizer.Lexer
+namespace DotMonkey.LexicalAnalizer
 {
     public class Lexer
     {
@@ -26,11 +25,11 @@ namespace DotMonkey.LexicalAnalizer.Lexer
             ReadPosition++;
         }
 
-        private Token NextToken()
+        public Token NextToken()
         {
             var token = new Token();
             SkipWhitespace();
-            if (int.Parse(Ch.ToString()) == 0)
+            if (Ch == 0)
                 token = new Token(Constants.EOF, string.Empty);
 
             token = Ch switch
@@ -52,7 +51,10 @@ namespace DotMonkey.LexicalAnalizer.Lexer
             Token DefautlPattern(Token token)
             {
                 if (char.IsLetter(Ch))
-                    return new Token(token.LookupIdent(), ReadIdentifier());
+                {
+                    token.Literal = ReadIdentifier();
+                    return new Token(token.LookupIdent(), token.Literal);
+                }
 
                 if (char.IsDigit(Ch))
                     return new Token(Constants.INT, ReadNumber());
