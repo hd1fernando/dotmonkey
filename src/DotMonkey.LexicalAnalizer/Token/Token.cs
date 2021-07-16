@@ -20,7 +20,12 @@ namespace DotMonkey.LexicalAnalizer
             Keywords = new Dictionary<string, string>
             {
                 {"fn",Constants.FUNCTION },
-                {"let",Constants.LET }
+                {"let",Constants.LET },
+                {"true",Constants.TRUE },
+                {"false",Constants.FALSE },
+                {"if",Constants.IF },
+                {"else",Constants.ELSE },
+                {"return",Constants.RETURN},
             };
         }
 

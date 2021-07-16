@@ -28,5 +28,10 @@
 
         public const string FUNCTION = nameof(FUNCTION);
         public const string LET = nameof(LET);
+        public const string TRUE = nameof(TRUE);
+        public const string FALSE = nameof(FALSE);
+        public const string IF = nameof(IF);
+        public const string ELSE = nameof(ELSE);
+        public const string RETURN = nameof(RETURN);
     }
 }
