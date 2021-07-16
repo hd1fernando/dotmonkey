@@ -1,5 +1,7 @@
 ﻿using DotMonkey.LexicalAnalizer;
 using FluentAssertions;
+using FsCheck;
+using FsCheck.Xunit;
 using Xunit;
 
 namespace DotMonkey.LexicalAnalizerTest.LexerTest
@@ -24,5 +26,22 @@ namespace DotMonkey.LexicalAnalizerTest.LexerTest
 
             result.Type.Should().BeEquivalentTo(expectedToken);
         }
+
+        [Property(MaxTest = 10_000, Arbitrary = new[] { typeof(NumberGenerator) })]
+        public void TestIntToken(int value)
+        {
+            var code = value.ToString();
+            var lexer = new Lexer(code);
+
+            var result = lexer.NextToken();
+
+            result.Type.Should().BeEquivalentTo(Constants.INT);
+        }
+    }
+
+    public static class NumberGenerator
+    {
+        public static Arbitrary<int> Generate()
+            => Arb.Default.Int32().Filter(d => d >= 0 && d <= int.MaxValue);
     }
 }
