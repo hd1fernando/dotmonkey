@@ -38,10 +38,16 @@ namespace DotMonkey.LexicalAnalizer
                 ';' => new Token(Constants.SEMICOLON, Ch.ToString()),
                 '(' => new Token(Constants.LPARENT, Ch.ToString()),
                 ')' => new Token(Constants.RPARENT, Ch.ToString()),
-                ',' => new Token(Constants.COMMA, Ch.ToString()),
                 '+' => new Token(Constants.PLUS, Ch.ToString()),
+                '-' => new Token(Constants.MINUS, Ch.ToString()),
+                '!' => new Token(Constants.BANG, Ch.ToString()),
+                '*' => new Token(Constants.ASTERISK, Ch.ToString()),
+                '/' => new Token(Constants.SLASH, Ch.ToString()),
                 '{' => new Token(Constants.LBRACE, Ch.ToString()),
                 '}' => new Token(Constants.RBRACE, Ch.ToString()),
+                ',' => new Token(Constants.COMMA, Ch.ToString()),
+                '<' => new Token(Constants.LT, Ch.ToString()),
+                '>' => new Token(Constants.GT, Ch.ToString()),
                 _ => DefautlPattern(token)
             };
 

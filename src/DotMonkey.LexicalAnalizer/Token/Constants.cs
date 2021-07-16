@@ -10,6 +10,13 @@
 
         public const string ASSING = "=";
         public const string PLUS = "+";
+        public const string MINUS = "-";
+        public const string BANG = "!";
+        public const string ASTERISK = "*";
+        public const string SLASH = "/";
+
+        public const string LT = "<";
+        public const string GT = ">";
 
         public const string COMMA = ",";
         public const string SEMICOLON = ";";

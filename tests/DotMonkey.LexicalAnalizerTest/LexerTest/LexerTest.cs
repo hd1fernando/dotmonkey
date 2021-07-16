@@ -10,6 +10,7 @@ namespace DotMonkey.LexicalAnalizerTest.LexerTest
     {
         [Theory(DisplayName = "Test next token")]
         [InlineData("let", Constants.LET)]
+        [InlineData("fn", Constants.FUNCTION)]
         [InlineData("=", Constants.ASSING)]
         [InlineData("+", Constants.PLUS)]
         [InlineData(",", Constants.COMMA)]
@@ -18,6 +19,12 @@ namespace DotMonkey.LexicalAnalizerTest.LexerTest
         [InlineData(")", Constants.RPARENT)]
         [InlineData("{", Constants.LBRACE)]
         [InlineData("}", Constants.RBRACE)]
+        [InlineData("-", Constants.MINUS)]
+        [InlineData("!", Constants.BANG)]
+        [InlineData("*", Constants.ASTERISK)]
+        [InlineData("/", Constants.SLASH)]
+        [InlineData("<", Constants.LT)]
+        [InlineData(">", Constants.GT)]
         public void test1(string input, string expectedToken)
         {
             var lexer = new Lexer(input);
@@ -27,7 +34,7 @@ namespace DotMonkey.LexicalAnalizerTest.LexerTest
             result.Type.Should().BeEquivalentTo(expectedToken);
         }
 
-        [Property(MaxTest = 10_000, Arbitrary = new[] { typeof(NumberGenerator) })]
+        [Property(MaxTest = 10_000, Arbitrary = new[] { typeof(NumberGenerator) }, DisplayName = "Test INT token")]
         public void TestIntToken(int value)
         {
             var code = value.ToString();
