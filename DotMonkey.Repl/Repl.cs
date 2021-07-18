@@ -9,21 +9,17 @@ namespace DotMonkey
 
         public void Start()
         {
-            ConsoleKeyInfo cki;
-            Console.TreatControlCAsInput = true;
-
-            Console.WriteLine("Press ctrl esc to end cli mode.");
+            Console.WriteLine("Press ctrl+c to end cli mode.");
 
             do
             {
-
                 Console.Write(PROMPT);
                 var command = Console.ReadLine();
 
-                cki = Console.ReadKey();
 
                 var lexer = new Lexer(command);
 
+                Console.WriteLine(command);
                 Token token;
                 do
                 {
@@ -33,7 +29,7 @@ namespace DotMonkey
                 } while (token.Type != Constants.EOF);
 
 
-            } while (cki.Key != ConsoleKey.Escape);
+            } while (true);
         }
     }
 }
