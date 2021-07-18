@@ -2,6 +2,7 @@
 using FluentAssertions;
 using FsCheck;
 using FsCheck.Xunit;
+using System.Collections.Generic;
 using Xunit;
 
 namespace DotMonkey.LexicalAnalizerTest.LexerTest
@@ -40,6 +41,27 @@ namespace DotMonkey.LexicalAnalizerTest.LexerTest
             var result = lexer.NextToken();
 
             result.Type.Should().BeEquivalentTo(expectedToken);
+        }
+
+        [Theory(DisplayName = "Returns a pair token based in a pair input")]
+        [InlineData("test;", new[] { Constants.IDENT, Constants.SEMICOLON })]
+        [InlineData("===", new[] { Constants.EQ, Constants.ASSING })]
+        public void test2(string input, string[] expectedTokens)
+        {
+            var lexer = new Lexer(input);
+
+            Token token;
+            var listOfTokens = new List<string>();
+            do
+            {
+                token = lexer.NextToken();
+                listOfTokens.Add(token.Type);
+
+            } while (token.Type != Constants.EOF);
+
+            listOfTokens[0].Should().BeEquivalentTo(expectedTokens[0]);
+            listOfTokens[1].Should().BeEquivalentTo(expectedTokens[1]);
+
         }
 
         [Property(MaxTest = 10_000, Arbitrary = new[] { typeof(NumberGenerator) }, DisplayName = "Test INT token")]

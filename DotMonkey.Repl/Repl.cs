@@ -3,7 +3,7 @@ using System;
 
 namespace DotMonkey
 {
-    public class Repl
+    public class Repl : IRepl
     {
         public const string PROMPT = ">>";
 

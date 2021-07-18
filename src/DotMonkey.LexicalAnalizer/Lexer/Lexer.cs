@@ -53,13 +53,14 @@ namespace DotMonkey.LexicalAnalizer
             };
 
             ReadChar();
-            return token;
+            return token; 
 
             Token DefautlPattern(Token token)
             {
-                if (char.IsLetter(Ch))
+                if (IsLetter(Ch))
                 {
                     token.Literal = ReadIdentifier();
+                    ReadPosition--;
                     return new Token(token.LookupIdent(), token.Literal);
                 }
 
@@ -92,7 +93,8 @@ namespace DotMonkey.LexicalAnalizer
             }
         }
 
-
+        private bool IsLetter(char ch)
+            => char.IsLetter(ch) || ch == '_';
 
         private string ReadNumber()
         {
@@ -112,7 +114,7 @@ namespace DotMonkey.LexicalAnalizer
         private string ReadIdentifier()
         {
             var postion = Position;
-            while (char.IsLetter(Ch))
+            while (IsLetter(Ch))
                 ReadChar();
 
             return Input[postion..Position];
