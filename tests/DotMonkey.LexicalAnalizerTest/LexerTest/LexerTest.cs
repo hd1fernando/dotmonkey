@@ -15,7 +15,7 @@ namespace DotMonkey.LexicalAnalizerTest.LexerTest
         [InlineData("false", Constants.FALSE)]
         [InlineData("if", Constants.IF)]
         [InlineData("else", Constants.ELSE)]
-        [InlineData("retunr", Constants.RETURN)]
+        [InlineData("return", Constants.RETURN)]
         [InlineData("=", Constants.ASSING)]
         [InlineData("+", Constants.PLUS)]
         [InlineData(",", Constants.COMMA)]
@@ -33,7 +33,7 @@ namespace DotMonkey.LexicalAnalizerTest.LexerTest
         public void test1(string input, string expectedToken)
         {
             var lexer = new Lexer(input);
-
+            
             var result = lexer.NextToken();
 
             result.Type.Should().BeEquivalentTo(expectedToken);

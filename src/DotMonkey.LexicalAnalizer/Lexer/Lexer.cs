@@ -92,5 +92,10 @@ namespace DotMonkey.LexicalAnalizer
 
             return Input[postion..Position];
         }
+
+        private char PeekChar()
+            => ReadPosition >= Input.Length
+            ? Convert.ToChar(0)
+            : Input[ReadPosition];
     }
 }
