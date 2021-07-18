@@ -1,13 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.0.31423.177
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31424.327
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{1E80EA7D-19FF-4980-AA45-C68C13BD72A7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotMonkey.LexicalAnalizer", "src\DotMonkey.LexicalAnalizer\DotMonkey.LexicalAnalizer.csproj", "{CB6C5CF9-76DE-4FC5-B4FA-BF6D1EF3517E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotMonkey.LexicalAnalizerTest", "tests\DotMonkey.LexicalAnalizerTest\DotMonkey.LexicalAnalizerTest.csproj", "{A36D6126-C7FF-4B62-8371-22738C42DE22}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotMonkey.LexicalAnalizerTest", "tests\DotMonkey.LexicalAnalizerTest\DotMonkey.LexicalAnalizerTest.csproj", "{A36D6126-C7FF-4B62-8371-22738C42DE22}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotMonkey.Repl", "DotMonkey.Repl\DotMonkey.Repl.csproj", "{8AFFE909-FA4E-4271-91DE-87F50712A4C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotMonkey.Cli", "DotMonkey.Cli\DotMonkey.Cli.csproj", "{783CA077-A20A-42AD-82F6-528C4A318C94}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,6 +27,14 @@ Global
 		{A36D6126-C7FF-4B62-8371-22738C42DE22}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A36D6126-C7FF-4B62-8371-22738C42DE22}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A36D6126-C7FF-4B62-8371-22738C42DE22}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8AFFE909-FA4E-4271-91DE-87F50712A4C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8AFFE909-FA4E-4271-91DE-87F50712A4C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8AFFE909-FA4E-4271-91DE-87F50712A4C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8AFFE909-FA4E-4271-91DE-87F50712A4C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{783CA077-A20A-42AD-82F6-528C4A318C94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{783CA077-A20A-42AD-82F6-528C4A318C94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{783CA077-A20A-42AD-82F6-528C4A318C94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{783CA077-A20A-42AD-82F6-528C4A318C94}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

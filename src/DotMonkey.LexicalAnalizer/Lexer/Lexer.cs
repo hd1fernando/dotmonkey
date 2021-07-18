@@ -34,13 +34,13 @@ namespace DotMonkey.LexicalAnalizer
 
             token = Ch switch
             {
-                '=' => new Token(Constants.ASSING, Ch.ToString()),
+                '=' => CheckForEqualsOrAssing(),
                 ';' => new Token(Constants.SEMICOLON, Ch.ToString()),
                 '(' => new Token(Constants.LPARENT, Ch.ToString()),
                 ')' => new Token(Constants.RPARENT, Ch.ToString()),
                 '+' => new Token(Constants.PLUS, Ch.ToString()),
                 '-' => new Token(Constants.MINUS, Ch.ToString()),
-                '!' => new Token(Constants.BANG, Ch.ToString()),
+                '!' => CheckForBangOrNotEqual(),
                 '*' => new Token(Constants.ASTERISK, Ch.ToString()),
                 '/' => new Token(Constants.SLASH, Ch.ToString()),
                 '{' => new Token(Constants.LBRACE, Ch.ToString()),
@@ -48,6 +48,7 @@ namespace DotMonkey.LexicalAnalizer
                 ',' => new Token(Constants.COMMA, Ch.ToString()),
                 '<' => new Token(Constants.LT, Ch.ToString()),
                 '>' => new Token(Constants.GT, Ch.ToString()),
+                '\0' => new Token(Constants.EOF, Ch.ToString()),
                 _ => DefautlPattern(token)
             };
 
@@ -67,7 +68,31 @@ namespace DotMonkey.LexicalAnalizer
 
                 return new Token(Constants.ILLEGAL, Ch.ToString());
             }
+
+            Token CheckForEqualsOrAssing()
+            {
+                if (PeekChar() == '=')
+                {
+                    var localCh = Ch;
+                    ReadChar();
+                    return new Token(Constants.EQ, localCh.ToString() + Ch.ToString());
+                }
+                return new Token(Constants.ASSING, Ch.ToString());
+            }
+
+            Token CheckForBangOrNotEqual()
+            {
+                if (PeekChar() == '=')
+                {
+                    var localCh = Ch;
+                    ReadChar();
+                    return new Token(Constants.NOT_EQ, localCh.ToString() + Ch.ToString());
+                }
+                return new Token(Constants.BANG, Ch.ToString());
+            }
         }
+
+
 
         private string ReadNumber()
         {

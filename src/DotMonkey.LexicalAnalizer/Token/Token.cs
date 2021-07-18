@@ -34,5 +34,9 @@ namespace DotMonkey.LexicalAnalizer
             ? result
             : Constants.IDENT;
 
+        public override string ToString()
+        {
+            return $"{{{nameof(Type)}:{Type} {nameof(Literal)}:{Literal} }}";
+        }
     }
 }
