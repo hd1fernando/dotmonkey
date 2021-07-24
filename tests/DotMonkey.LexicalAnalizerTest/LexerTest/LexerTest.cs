@@ -34,6 +34,7 @@ namespace DotMonkey.LexicalAnalizerTest.LexerTest
         [InlineData(">", Constants.GT)]
         [InlineData("==", Constants.EQ)]
         [InlineData("!=", Constants.NOT_EQ)]
+        [Trait("Lexical Analizer", nameof(Lexer))]
         public void test1(string input, string expectedToken)
         {
             var lexer = new Lexer(input);
@@ -46,6 +47,7 @@ namespace DotMonkey.LexicalAnalizerTest.LexerTest
         [Theory(DisplayName = "Returns a pair token based in a pair input")]
         [InlineData("test;", new[] { Constants.IDENT, Constants.SEMICOLON })]
         [InlineData("===", new[] { Constants.EQ, Constants.ASSING })]
+        [Trait("Lexical Analizer", nameof(Lexer))]
         public void test2(string input, string[] expectedTokens)
         {
             var lexer = new Lexer(input);
@@ -65,6 +67,7 @@ namespace DotMonkey.LexicalAnalizerTest.LexerTest
         }
 
         [Property(MaxTest = 10_000, Arbitrary = new[] { typeof(NumberGenerator) }, DisplayName = "Test INT token")]
+        [Trait("Lexical Analizer", nameof(Lexer))]
         public void TestIntToken(int value)
         {
             var code = value.ToString();

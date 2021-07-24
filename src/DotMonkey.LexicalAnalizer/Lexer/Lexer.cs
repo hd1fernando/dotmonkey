@@ -53,6 +53,7 @@ namespace DotMonkey.LexicalAnalizer
             };
 
             ReadChar();
+
             return token; 
 
             Token DefautlPattern(Token token)

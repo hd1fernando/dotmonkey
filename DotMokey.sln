@@ -9,9 +9,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotMonkey.LexicalAnalizer",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotMonkey.LexicalAnalizerTest", "tests\DotMonkey.LexicalAnalizerTest\DotMonkey.LexicalAnalizerTest.csproj", "{A36D6126-C7FF-4B62-8371-22738C42DE22}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotMonkey.Repl", "DotMonkey.Repl\DotMonkey.Repl.csproj", "{8AFFE909-FA4E-4271-91DE-87F50712A4C7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotMonkey.Repl", "DotMonkey.Repl\DotMonkey.Repl.csproj", "{8AFFE909-FA4E-4271-91DE-87F50712A4C7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotMonkey.Cli", "DotMonkey.Cli\DotMonkey.Cli.csproj", "{783CA077-A20A-42AD-82F6-528C4A318C94}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotMonkey.Cli", "DotMonkey.Cli\DotMonkey.Cli.csproj", "{783CA077-A20A-42AD-82F6-528C4A318C94}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotMonkey.ParserTest", "DotMonkey.ParserTest\DotMonkey.ParserTest.csproj", "{BA067B08-8503-40FD-B993-0A275BBB1BB8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotMonkey.Parser", "DotMonkey.Parser\DotMonkey.Parser.csproj", "{901DE843-AA9A-4E11-8A52-58B3E650B890}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,12 +39,21 @@ Global
 		{783CA077-A20A-42AD-82F6-528C4A318C94}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{783CA077-A20A-42AD-82F6-528C4A318C94}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{783CA077-A20A-42AD-82F6-528C4A318C94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA067B08-8503-40FD-B993-0A275BBB1BB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA067B08-8503-40FD-B993-0A275BBB1BB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA067B08-8503-40FD-B993-0A275BBB1BB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA067B08-8503-40FD-B993-0A275BBB1BB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{901DE843-AA9A-4E11-8A52-58B3E650B890}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{901DE843-AA9A-4E11-8A52-58B3E650B890}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{901DE843-AA9A-4E11-8A52-58B3E650B890}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{901DE843-AA9A-4E11-8A52-58B3E650B890}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{A36D6126-C7FF-4B62-8371-22738C42DE22} = {1E80EA7D-19FF-4980-AA45-C68C13BD72A7}
+		{BA067B08-8503-40FD-B993-0A275BBB1BB8} = {1E80EA7D-19FF-4980-AA45-C68C13BD72A7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EAF51E9A-C810-4FFD-A4B3-A9334B2BBBFF}
