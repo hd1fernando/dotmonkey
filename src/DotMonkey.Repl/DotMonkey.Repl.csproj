@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\DotMonkey.LexicalAnalizer\DotMonkey.LexicalAnalizer.csproj" />
+    <ProjectReference Include="..\DotMonkey.LexicalAnalizer\DotMonkey.LexicalAnalizer.csproj" />
   </ItemGroup>
 
 </Project>
