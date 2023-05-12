@@ -6,7 +6,7 @@ on:
       - master
   pull_request:
     branches:
-    - master
+      - master
 jobs:
   build:
 
@@ -19,8 +19,8 @@ jobs:
       with:
         dotnet-version: '7.0.x'
     - name: Restore dependencies
-      run: dotnet restore src
+      run: dotnet restore DotMokey.sln
     - name: Build
-      run: dotnet build --no-restore src
+      run: dotnet build --no-restore DotMokey.sln
     - name: Test
-      run: dotnet test --no-build --verbosity normal test
+      run: dotnet test --no-build --verbosity normal DotMokey.sln
