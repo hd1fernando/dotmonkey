@@ -5,7 +5,7 @@ namespace DotMonkey
 {
     public class Repl : IRepl
     {
-        public const string PROMPT = ">>";
+        public const string PROMPT = ">> ";
 
         public void Start()
         {
