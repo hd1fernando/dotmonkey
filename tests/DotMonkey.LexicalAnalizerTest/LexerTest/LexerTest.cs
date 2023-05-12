@@ -47,6 +47,7 @@ namespace DotMonkey.LexicalAnalizerTest.LexerTest
         [Theory(DisplayName = "Returns a pair token based in a pair input")]
         [InlineData("test;", new[] { Constants.IDENT, Constants.SEMICOLON })]
         [InlineData("===", new[] { Constants.EQ, Constants.ASSING })]
+        [InlineData("8;", new[] { Constants.INT, Constants.SEMICOLON })]
         [Trait("Lexical Analizer", nameof(Lexer))]
         public void test2(string input, string[] expectedTokens)
         {
