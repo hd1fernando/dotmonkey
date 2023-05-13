@@ -1,57 +1,47 @@
 ﻿using System;
+using System.Net.NetworkInformation;
 
 namespace DotMonkey.LexicalAnalizer;
 
 public class Lexer
 {
-    public string Input { get; set; }
-    public int CurrentPositionInInput { get; set; } // Position
-    public int ReadPosition { get; set; }  // points to the next char in the input
-    public char CharUnderExamination { get; set; } // CH
+    private string _input { get; set; }
+    private int _currentPositionInInput { get; set; } // Position
+    private int _readPosition { get; set; }  // points to the next char in the input
+    private char _charUnderExamination { get; set; } // CH
 
     private const int NULL_CHAR = 0;
 
     public Lexer(string input)
     {
-        Input = input;
+        _input = input;
         ReadChar();
-    }
-
-    private void ReadChar()
-    {
-        var isTheEndOfInput = Input is null || ReadPosition >= Input?.Length;
-        CharUnderExamination = isTheEndOfInput
-            ? NullASCII()
-            : Input[ReadPosition];
-
-        CurrentPositionInInput = ReadPosition;
-        ReadPosition++;
     }
 
     public Token NextToken()
     {
         var token = new Token();
         SkipWhitespace();
-        if (CharUnderExamination == NULL_CHAR)
+        if (_charUnderExamination == NULL_CHAR)
             token = new Token(Constants.EOF, string.Empty);
 
-        token = CharUnderExamination switch
+        token = _charUnderExamination switch
         {
             '=' => CheckForEqualsOrAssing(),
-            ';' => new Token(Constants.SEMICOLON, CharUnderExamination.ToString()),
-            '(' => new Token(Constants.LPARENT, CharUnderExamination.ToString()),
-            ')' => new Token(Constants.RPARENT, CharUnderExamination.ToString()),
-            '+' => new Token(Constants.PLUS, CharUnderExamination.ToString()),
-            '-' => new Token(Constants.MINUS, CharUnderExamination.ToString()),
+            ';' => new Token(Constants.SEMICOLON, _charUnderExamination.ToString()),
+            '(' => new Token(Constants.LPARENT, _charUnderExamination.ToString()),
+            ')' => new Token(Constants.RPARENT, _charUnderExamination.ToString()),
+            '+' => new Token(Constants.PLUS, _charUnderExamination.ToString()),
+            '-' => new Token(Constants.MINUS, _charUnderExamination.ToString()),
             '!' => CheckForBangOrNotEqual(),
-            '*' => new Token(Constants.ASTERISK, CharUnderExamination.ToString()),
-            '/' => new Token(Constants.SLASH, CharUnderExamination.ToString()),
-            '{' => new Token(Constants.LBRACE, CharUnderExamination.ToString()),
-            '}' => new Token(Constants.RBRACE, CharUnderExamination.ToString()),
-            ',' => new Token(Constants.COMMA, CharUnderExamination.ToString()),
-            '<' => new Token(Constants.LT, CharUnderExamination.ToString()),
-            '>' => new Token(Constants.GT, CharUnderExamination.ToString()),
-            '\0' => new Token(Constants.EOF, CharUnderExamination.ToString()),
+            '*' => new Token(Constants.ASTERISK, _charUnderExamination.ToString()),
+            '/' => new Token(Constants.SLASH, _charUnderExamination.ToString()),
+            '{' => new Token(Constants.LBRACE, _charUnderExamination.ToString()),
+            '}' => new Token(Constants.RBRACE, _charUnderExamination.ToString()),
+            ',' => new Token(Constants.COMMA, _charUnderExamination.ToString()),
+            '<' => new Token(Constants.LT, _charUnderExamination.ToString()),
+            '>' => new Token(Constants.GT, _charUnderExamination.ToString()),
+            '\0' => new Token(Constants.EOF, _charUnderExamination.ToString()),
             _ => DefautlPattern(token)
         };
 
@@ -61,42 +51,53 @@ public class Lexer
 
         Token DefautlPattern(Token token)
         {
-            if (IsLetter(CharUnderExamination))
+            if (IsLetter(_charUnderExamination))
             {
                 token.Literal = ReadIdentifier();
                 return new Token(token.LookupIdent(), token.Literal);
             }
 
-            if (char.IsDigit(CharUnderExamination))
+            if (char.IsDigit(_charUnderExamination))
             {
                 token.Literal = ReadNumber();
                 return new Token(Constants.INT, token.Literal);
             }
 
-            return new Token(Constants.ILLEGAL, CharUnderExamination.ToString());
+            return new Token(Constants.ILLEGAL, _charUnderExamination.ToString());
         }
 
         Token CheckForEqualsOrAssing()
         {
             if (PeekChar() == '=')
             {
-                var localCh = CharUnderExamination;
+                var localCh = _charUnderExamination;
                 ReadChar();
-                return new Token(Constants.EQ, localCh.ToString() + CharUnderExamination.ToString());
+                return new Token(Constants.EQ, localCh.ToString() + _charUnderExamination.ToString());
             }
-            return new Token(Constants.ASSING, CharUnderExamination.ToString());
+            return new Token(Constants.ASSING, _charUnderExamination.ToString());
         }
 
         Token CheckForBangOrNotEqual()
         {
             if (PeekChar() == '=')
             {
-                var localCh = CharUnderExamination;
+                var localCh = _charUnderExamination;
                 ReadChar();
-                return new Token(Constants.NOT_EQ, localCh.ToString() + CharUnderExamination.ToString());
+                return new Token(Constants.NOT_EQ, localCh.ToString() + _charUnderExamination.ToString());
             }
-            return new Token(Constants.BANG, CharUnderExamination.ToString());
+            return new Token(Constants.BANG, _charUnderExamination.ToString());
         }
+    }
+
+    private void ReadChar()
+    {
+        var isTheEndOfInput = _input is null || _readPosition >= _input?.Length;
+        _charUnderExamination = isTheEndOfInput
+            ? NullASCII()
+            : _input[_readPosition];
+
+        _currentPositionInInput = _readPosition;
+        _readPosition++;
     }
 
     private bool IsLetter(char ch)
@@ -104,36 +105,36 @@ public class Lexer
 
     private void SkipWhitespace()
     {
-        while (CharUnderExamination is ('\t' or '\n' or ' '))
+        while (_charUnderExamination is ('\t' or '\n' or ' '))
             ReadChar();
     }
 
     private string ReadIdentifier()
     {
-        var postion = CurrentPositionInInput;
-        while (IsLetter(CharUnderExamination))
+        var postion = _currentPositionInInput;
+        while (IsLetter(_charUnderExamination))
             ReadChar();
 
-        ReadPosition--;
+        _readPosition--;
 
-        return Input[postion..CurrentPositionInInput];
+        return _input[postion.._currentPositionInInput];
     }
 
     private string ReadNumber()
     {
-        var position = CurrentPositionInInput;
-        while (char.IsDigit(CharUnderExamination))
+        var position = _currentPositionInInput;
+        while (char.IsDigit(_charUnderExamination))
             ReadChar();
 
-        ReadPosition--;
+        _readPosition--;
 
-        return Input[position..CurrentPositionInInput];
+        return _input[position.._currentPositionInInput];
     }
 
     private char PeekChar()
-        => ReadPosition >= Input.Length
+        => _readPosition >= _input.Length
         ? NullASCII()
-        : Input[ReadPosition];
+        : _input[_readPosition];
 
     private char NullASCII()
     {
