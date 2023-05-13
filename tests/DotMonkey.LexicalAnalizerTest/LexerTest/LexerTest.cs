@@ -5,84 +5,104 @@ using FsCheck.Xunit;
 using System.Collections.Generic;
 using Xunit;
 
-namespace DotMonkey.LexicalAnalizerTest.LexerTest
+namespace DotMonkey.LexicalAnalizerTest.LexerTest;
+
+public class LexerTest
 {
-    public class LexerTest
+    [Theory(DisplayName = "Test next token")]
+    [InlineData("let", Constants.LET)]
+    [InlineData("fn", Constants.FUNCTION)]
+    [InlineData("true", Constants.TRUE)]
+    [InlineData("false", Constants.FALSE)]
+    [InlineData("if", Constants.IF)]
+    [InlineData("else", Constants.ELSE)]
+    [InlineData("return", Constants.RETURN)]
+    [InlineData("=", Constants.ASSING)]
+    [InlineData("+", Constants.PLUS)]
+    [InlineData(",", Constants.COMMA)]
+    [InlineData(";", Constants.SEMICOLON)]
+    [InlineData("(", Constants.LPARENT)]
+    [InlineData(")", Constants.RPARENT)]
+    [InlineData("{", Constants.LBRACE)]
+    [InlineData("}", Constants.RBRACE)]
+    [InlineData("-", Constants.MINUS)]
+    [InlineData("!", Constants.BANG)]
+    [InlineData("*", Constants.ASTERISK)]
+    [InlineData("/", Constants.SLASH)]
+    [InlineData("<", Constants.LT)]
+    [InlineData(">", Constants.GT)]
+    [InlineData("==", Constants.EQ)]
+    [InlineData("!=", Constants.NOT_EQ)]
+    [InlineData("\0", Constants.EOF)]
+    [InlineData(null, Constants.EOF)]
+    [InlineData("", Constants.EOF)]
+    [InlineData(" ", Constants.EOF)]
+    [Trait("Lexical Analizer", nameof(Lexer))]
+    public void test1(string input, string expectedToken)
     {
-        [Theory(DisplayName = "Test next token")]
-        [InlineData("let", Constants.LET)]
-        [InlineData("fn", Constants.FUNCTION)]
-        [InlineData("true", Constants.TRUE)]
-        [InlineData("false", Constants.FALSE)]
-        [InlineData("if", Constants.IF)]
-        [InlineData("else", Constants.ELSE)]
-        [InlineData("return", Constants.RETURN)]
-        [InlineData("\0", Constants.EOF)]
-        [InlineData("=", Constants.ASSING)]
-        [InlineData("+", Constants.PLUS)]
-        [InlineData(",", Constants.COMMA)]
-        [InlineData(";", Constants.SEMICOLON)]
-        [InlineData("(", Constants.LPARENT)]
-        [InlineData(")", Constants.RPARENT)]
-        [InlineData("{", Constants.LBRACE)]
-        [InlineData("}", Constants.RBRACE)]
-        [InlineData("-", Constants.MINUS)]
-        [InlineData("!", Constants.BANG)]
-        [InlineData("*", Constants.ASTERISK)]
-        [InlineData("/", Constants.SLASH)]
-        [InlineData("<", Constants.LT)]
-        [InlineData(">", Constants.GT)]
-        [InlineData("==", Constants.EQ)]
-        [InlineData("!=", Constants.NOT_EQ)]
-        [Trait("Lexical Analizer", nameof(Lexer))]
-        public void test1(string input, string expectedToken)
-        {
-            var lexer = new Lexer(input);
+        var lexer = new Lexer(input);
 
-            var result = lexer.NextToken();
+        var result = lexer.NextToken();
 
-            result.Type.Should().BeEquivalentTo(expectedToken);
-        }
+        result.Type.Should().BeEquivalentTo(expectedToken);
+    }
 
-        [Theory(DisplayName = "Returns a pair token based in a pair input")]
-        [InlineData("test;", new[] { Constants.IDENT, Constants.SEMICOLON })]
-        [InlineData("===", new[] { Constants.EQ, Constants.ASSING })]
-        [InlineData("8;", new[] { Constants.INT, Constants.SEMICOLON })]
-        [Trait("Lexical Analizer", nameof(Lexer))]
-        public void test2(string input, string[] expectedTokens)
-        {
-            var lexer = new Lexer(input);
-
-            Token token;
-            var listOfTokens = new List<string>();
-            do
+    [Theory(DisplayName = "Returns tokens based on the input")]
+    [InlineData("test;", new[] { Constants.IDENT, Constants.SEMICOLON })]
+    [InlineData("===", new[] { Constants.EQ, Constants.ASSING })]
+    [InlineData("8;", new[] { Constants.INT, Constants.SEMICOLON })]
+    [InlineData("42;", new[] { Constants.INT, Constants.SEMICOLON })]
+    [InlineData("=+(){},;", new[] { Constants.ASSING, Constants.PLUS, Constants.LPARENT, Constants.RPARENT, Constants.LBRACE, Constants.RBRACE, Constants.COMMA, Constants.SEMICOLON })]
+    [InlineData(
+        "let five = 5; " +
+             "let ten = 10; " +
+             "let add = fn( x, y) {" +
+                "x + y; " +
+             "};" +
+             "let result = add(five, ten);",
+            new[]
             {
-                token = lexer.NextToken();
-                listOfTokens.Add(token.Type);
-
-            } while (token.Type != Constants.EOF);
-
-            listOfTokens[0].Should().BeEquivalentTo(expectedTokens[0]);
-            listOfTokens[1].Should().BeEquivalentTo(expectedTokens[1]);
-
-        }
-
-        [Property(MaxTest = 10_000, Arbitrary = new[] { typeof(NumberGenerator) }, DisplayName = "Test INT token")]
-        [Trait("Lexical Analizer", nameof(Lexer))]
-        public void TestIntToken(int value)
-        {
-            var code = value.ToString();
-            var lexer = new Lexer(code);
-
-            var result = lexer.NextToken();
-
-            result.Type.Should().BeEquivalentTo(Constants.INT);
-        }
-    }
-
-    public static class NumberGenerator
+                Constants.LET, Constants.IDENT, Constants.ASSING, Constants.INT, Constants.SEMICOLON,
+                Constants.LET, Constants.IDENT, Constants.ASSING, Constants.INT, Constants.SEMICOLON,
+                Constants.LET, Constants.IDENT, Constants.ASSING ,Constants.FUNCTION, Constants.LPARENT, Constants.IDENT, Constants.COMMA, Constants.IDENT, Constants.RPARENT, Constants.LBRACE,
+                Constants.IDENT, Constants.PLUS, Constants.IDENT, Constants.SEMICOLON,
+                Constants.RBRACE, Constants.SEMICOLON,
+                Constants.LET, Constants.IDENT, Constants.ASSING, Constants.IDENT, Constants.LPARENT, Constants.IDENT, Constants.COMMA, Constants.IDENT, Constants.RPARENT, Constants.SEMICOLON
+            })]
+    [Trait("Lexical Analizer", nameof(Lexer))]
+    public void test2(string input, string[] expectedTokens)
     {
-        public static Arbitrary<int> Generate()
-            => Arb.Default.Int32().Filter(d => d >= 0 && d <= int.MaxValue);
+        var lexer = new Lexer(input);
+
+        Token token;
+        var listOfTokens = new List<string>();
+        do
+        {
+            token = lexer.NextToken();
+            listOfTokens.Add(token.Type);
+
+        } while (token.Type != Constants.EOF);
+
+        listOfTokens[0].Should().BeEquivalentTo(expectedTokens[0]);
+        listOfTokens[1].Should().BeEquivalentTo(expectedTokens[1]);
+
     }
+
+    [Property(MaxTest = 10_000, Arbitrary = new[] { typeof(NumberGenerator) }, DisplayName = "Test INT token")]
+    [Trait("Lexical Analizer", nameof(Lexer))]
+    public void TestIntToken(int value)
+    {
+        var code = value.ToString();
+        var lexer = new Lexer(code);
+
+        var result = lexer.NextToken();
+
+        result.Type.Should().BeEquivalentTo(Constants.INT);
+    }
+}
+
+public static class NumberGenerator
+{
+    public static Arbitrary<int> Generate()
+        => Arb.Default.Int32().Filter(d => d >= 0 && d <= int.MaxValue);
 }
