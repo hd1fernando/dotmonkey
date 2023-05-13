@@ -6,7 +6,13 @@ namespace DotMonkey.Cli
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, this is .Mokey programming language.");
+            var langVersion = "0.1.0";
+            var langType = "preview";
+
+            var interpreterVersion = "0.1.0";
+
+            Console.WriteLine($"Mokey Language {langVersion} ({langType})");
+            Console.WriteLine($"[DotMonkey {interpreterVersion}]");
 
             new Repl().Start();
         }

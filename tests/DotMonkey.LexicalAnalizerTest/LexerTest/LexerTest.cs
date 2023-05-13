@@ -72,7 +72,9 @@ public class LexerTest
              "  return true; " +
              "} else {" +
              "  return false; " +
-             "}",
+             "}" +
+             "10 == 10;" +
+             "10 != 9;",
             new[]
             {
                 Constants.LET, Constants.IDENT, Constants.ASSING, Constants.INT, Constants.SEMICOLON,
@@ -88,6 +90,8 @@ public class LexerTest
                 Constants.RBRACE, Constants.ELSE, Constants.LBRACE,
                 Constants.RETURN, Constants.FALSE, Constants.SEMICOLON,
                 Constants.RBRACE,
+                Constants.INT, Constants.EQ, Constants.INT, Constants.SEMICOLON,
+                Constants.INT, Constants.NOT_EQ,Constants.INT, Constants.SEMICOLON,
                 Constants.EOF
             })]
     [Trait("Lexical Analizer", nameof(Lexer))]

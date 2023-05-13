@@ -5,7 +5,7 @@ namespace DotMonkey
 {
     public class Repl : IRepl
     {
-        public const string PROMPT = ">> ";
+        public const string PROMPT = ">>> ";
 
         public void Start()
         {
@@ -27,7 +27,6 @@ namespace DotMonkey
                     Console.WriteLine(token.ToString());
 
                 } while (token.Type != Constants.EOF);
-
 
             } while (true);
         }

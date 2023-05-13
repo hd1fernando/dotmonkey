@@ -91,8 +91,7 @@ public class Lexer
 
     private void ReadChar()
     {
-        var isTheEndOfInput = _input is null || _readPosition >= _input?.Length;
-        _charUnderExamination = isTheEndOfInput
+        _charUnderExamination = IsTheEndOfInput()
             ? NullASCII()
             : _input[_readPosition];
 
@@ -132,7 +131,7 @@ public class Lexer
     }
 
     private char PeekChar()
-        => _readPosition >= _input.Length
+        => IsTheEndOfInput()
         ? NullASCII()
         : _input[_readPosition];
 
@@ -141,4 +140,6 @@ public class Lexer
         // Unicode and ASCII for NULL char. For more information see: https://www.ascii-code.com/ and https://unicode-table.com/en/
         return Convert.ToChar(NULL_CHAR);
     }
+
+    private bool IsTheEndOfInput() => _input is null || _readPosition >= _input?.Length;
 }
