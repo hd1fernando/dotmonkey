@@ -10,6 +10,7 @@ namespace DotMonkey.LexicalAnalizerTest.LexerTest;
 public class LexerTest
 {
     [Theory(DisplayName = "Test next token")]
+    [InlineData("test88", Constants.IDENT)]
     [InlineData("let", Constants.LET)]
     [InlineData("fn", Constants.FUNCTION)]
     [InlineData("true", Constants.TRUE)]
@@ -33,10 +34,13 @@ public class LexerTest
     [InlineData(">", Constants.GT)]
     [InlineData("==", Constants.EQ)]
     [InlineData("!=", Constants.NOT_EQ)]
-    [InlineData("\0", Constants.EOF)]
     [InlineData(null, Constants.EOF)]
     [InlineData("", Constants.EOF)]
     [InlineData(" ", Constants.EOF)]
+    [InlineData("\0", Constants.EOF)]
+    [InlineData("\t", Constants.EOF)]
+    [InlineData("\n", Constants.EOF)]
+    [InlineData("^", Constants.ILLEGAL)]
     [Trait("Lexical Analizer", nameof(Lexer))]
     public void test1(string input, string expectedToken)
     {
@@ -44,22 +48,31 @@ public class LexerTest
 
         var result = lexer.NextToken();
 
-        result.Type.Should().BeEquivalentTo(expectedToken);
+        result.Type.Should().BeEquivalentTo(expectedToken, because: $"'{input}' generates an inexpected ouput");
     }
 
+
     [Theory(DisplayName = "Returns tokens based on the input")]
-    [InlineData("test;", new[] { Constants.IDENT, Constants.SEMICOLON })]
-    [InlineData("===", new[] { Constants.EQ, Constants.ASSING })]
-    [InlineData("8;", new[] { Constants.INT, Constants.SEMICOLON })]
-    [InlineData("42;", new[] { Constants.INT, Constants.SEMICOLON })]
-    [InlineData("=+(){},;", new[] { Constants.ASSING, Constants.PLUS, Constants.LPARENT, Constants.RPARENT, Constants.LBRACE, Constants.RBRACE, Constants.COMMA, Constants.SEMICOLON })]
+    //[InlineData("test88;", new[] { Constants.IDENT, Constants.SEMICOLON }, Skip = "I don't know if the languge will support this.")]
+    [InlineData("test;", new[] { Constants.IDENT, Constants.SEMICOLON, Constants.EOF })]
+    [InlineData("===", new[] { Constants.EQ, Constants.ASSING, Constants.EOF })]
+    [InlineData("8;", new[] { Constants.INT, Constants.SEMICOLON, Constants.EOF })]
+    [InlineData("42;", new[] { Constants.INT, Constants.SEMICOLON, Constants.EOF })]
+    [InlineData("=+(){},;", new[] { Constants.ASSING, Constants.PLUS, Constants.LPARENT, Constants.RPARENT, Constants.LBRACE, Constants.RBRACE, Constants.COMMA, Constants.SEMICOLON, Constants.EOF })]
     [InlineData(
         "let five = 5; " +
              "let ten = 10; " +
              "let add = fn( x, y) {" +
                 "x + y; " +
              "};" +
-             "let result = add(five, ten);",
+             "let result = add(five, ten);" +
+             "!-/*5;" +
+             "5 < 10 > 5;" +
+             "if (5 < 10) {" +
+             "  return true; " +
+             "} else {" +
+             "  return false; " +
+             "}",
             new[]
             {
                 Constants.LET, Constants.IDENT, Constants.ASSING, Constants.INT, Constants.SEMICOLON,
@@ -67,7 +80,15 @@ public class LexerTest
                 Constants.LET, Constants.IDENT, Constants.ASSING ,Constants.FUNCTION, Constants.LPARENT, Constants.IDENT, Constants.COMMA, Constants.IDENT, Constants.RPARENT, Constants.LBRACE,
                 Constants.IDENT, Constants.PLUS, Constants.IDENT, Constants.SEMICOLON,
                 Constants.RBRACE, Constants.SEMICOLON,
-                Constants.LET, Constants.IDENT, Constants.ASSING, Constants.IDENT, Constants.LPARENT, Constants.IDENT, Constants.COMMA, Constants.IDENT, Constants.RPARENT, Constants.SEMICOLON
+                Constants.LET, Constants.IDENT, Constants.ASSING, Constants.IDENT, Constants.LPARENT, Constants.IDENT, Constants.COMMA, Constants.IDENT, Constants.RPARENT, Constants.SEMICOLON,
+                Constants.BANG, Constants.MINUS, Constants.SLASH, Constants.ASTERISK, Constants.INT, Constants.SEMICOLON,
+                Constants.INT, Constants.LT, Constants.INT, Constants.GT, Constants.INT, Constants.SEMICOLON,
+                Constants.IF, Constants.LPARENT, Constants.INT, Constants.LT, Constants.INT, Constants.RPARENT, Constants.LBRACE,
+                Constants.RETURN, Constants.TRUE, Constants.SEMICOLON,
+                Constants.RBRACE, Constants.ELSE, Constants.LBRACE,
+                Constants.RETURN, Constants.FALSE, Constants.SEMICOLON,
+                Constants.RBRACE,
+                Constants.EOF
             })]
     [Trait("Lexical Analizer", nameof(Lexer))]
     public void test2(string input, string[] expectedTokens)
@@ -83,8 +104,10 @@ public class LexerTest
 
         } while (token.Type != Constants.EOF);
 
-        listOfTokens[0].Should().BeEquivalentTo(expectedTokens[0]);
-        listOfTokens[1].Should().BeEquivalentTo(expectedTokens[1]);
+        for (int i = 0; i < listOfTokens.Count; ++i)
+        {
+            listOfTokens[i].Should().BeEquivalentTo(expectedTokens[i]);
+        }
 
     }
 
