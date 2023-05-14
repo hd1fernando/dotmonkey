@@ -1,0 +1,10 @@
+Notes:
+This is a recursive descent parser.
+Expressions produce valuesm steatments don't.
+The AST consists of Nodes that are connectet wich other. Some nodes implments ISteament and som IExpression.
+
+AST:
+<steatment> := let | return
+
+
+let <identifer> = <expression>;
