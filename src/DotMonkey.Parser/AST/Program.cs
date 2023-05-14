@@ -13,7 +13,10 @@ public class Program : INode
     /// Every valid dotMonkey program is a serie of statements;
     /// This is just a slice of AST nodes that implements IStatement;
     /// </summary>
-    IList<IStatement> Statements { get; }
+    public IList<IStatement> Statements { get; private set; } = new List<IStatement>();
+
+    public void AddSteatment(IStatement statement)
+        => Statements.Add(statement);
 
     public string TokenLiteral()
     {
