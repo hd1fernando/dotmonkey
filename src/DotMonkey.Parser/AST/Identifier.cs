@@ -11,6 +11,12 @@ public class Identifier : IExpression
     public Token Token { get; init; } // The token.IDENT token
     public string Value { get; init; }
 
+    public Identifier(Token token, string value)
+    {
+        Token = token;
+        Value = value;
+    }
+
     public void ExpressionNode()
     {
         throw new System.NotImplementedException();

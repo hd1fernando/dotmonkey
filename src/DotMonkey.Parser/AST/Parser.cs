@@ -1,6 +1,8 @@
 ﻿using DotMonkey.LexicalAnalizer;
 using DotMonkey.Parser.AST.Interfaces;
+using DotMonkey.Parser.AST.Statements;
 using System;
+using System.Collections.Generic;
 
 namespace DotMonkey.Parser.AST;
 
@@ -9,6 +11,8 @@ public class Parser
     private Lexer _lexer { get; init; }
     public Token CurrentToken { get; private set; }
     public Token PeekToken { get; private set; }
+    public List<string> Errors { get; private set; } = new List<string>();
+
 
     public Parser(Lexer lexer)
     {
@@ -18,11 +22,12 @@ public class Parser
         NextToken();
         NextToken();
     }
+
     public Program ParserProgram()
     {
         Program program = ConstrucRootNodeOfAST();
 
-        while (CurrentToken.Type != Constants.EOF)
+        while (CurrentTokenIs(Constants.EOF) == false)
         {
             var statement = ParserStatement();
 
@@ -48,9 +53,57 @@ public class Parser
         };
     }
 
-    private IStatement ParserLetStatement()
+    private LetStatement ParserLetStatement()
     {
-        throw new NotImplementedException();
+        var statement = new LetStatement(CurrentToken);
+
+        if (ExpectedPeek(Constants.IDENT) == false)
+        {
+            return null;
+        }
+
+        statement.Name = new Identifier(CurrentToken, CurrentToken.Literal);
+
+        if (ExpectedPeek(Constants.ASSING) == false)
+        {
+            return null;
+        }
+
+        // TODO: we're skipping the expression until we enconter a semicolon
+        while (CurrentTokenIs(Constants.SEMICOLON) == false)
+        {
+            NextToken();
+        }
+
+        return statement;
+    }
+
+    private bool PeekTokenIs(string constant)
+    {
+        return PeekToken.Type == constant;
+    }
+
+    private void PeekError(string constant)
+    {
+        var message = $"expected next token to be {constant}, got {PeekToken.Type} instead.";
+        Errors.Add(message);
+    }
+
+    private bool CurrentTokenIs(string constant)
+    {
+        return CurrentToken.Type == constant;
+    }
+
+    private bool ExpectedPeek(string constant)
+    {
+        if (PeekTokenIs(constant))
+        {
+            NextToken();
+            return true;
+        }
+
+        PeekError(constant);
+        return false;
     }
 
     private void NextToken()
