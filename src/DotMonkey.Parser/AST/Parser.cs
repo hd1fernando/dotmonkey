@@ -8,6 +8,14 @@ namespace DotMonkey.Parser.AST;
 
 public class Parser
 {
+    private Dictionary<string, PrefixParserFn> PrefixParserFns = new Dictionary<string, PrefixParserFn>();
+    private Dictionary<string, InfixParserFn> InfixParserFns = new Dictionary<string, InfixParserFn>();
+
+    public delegate IExpression PrefixParserFn();
+    public delegate IExpression InfixParserFn(IExpression expression);
+
+
+
     private Lexer _lexer { get; init; }
     public Token CurrentToken { get; private set; }
     public Token PeekToken { get; private set; }
@@ -43,6 +51,19 @@ public class Parser
 
         static Program ConstrucRootNodeOfAST() => new Program();
     }
+
+
+    public void RegisterPrefix(string constant, PrefixParserFn fn)
+    {
+        //PrefixParserFns[constant] = fn;
+        PrefixParserFns.Add(constant, fn);
+    }
+
+    public void RegisterInfix(string constant, InfixParserFn fn)
+    {
+        InfixParserFns.Add(constant, fn);
+    }
+
 
     private IStatement ParserStatement()
     {
