@@ -49,8 +49,24 @@ public class Parser
         return CurrentToken.Type switch
         {
             Constants.LET => ParserLetStatement(),
+            Constants.RETURN => ParserReturnStatement(),
             _ => null
         };
+    }
+
+    private ReturnStatement ParserReturnStatement()
+    {
+        var statement = new ReturnStatement(CurrentToken);
+
+        NextToken();
+
+        // TODO: we're skipping the expression until we enconter a semicolon
+        while (CurrentTokenIs(Constants.SEMICOLON) == false)
+        {
+            NextToken();
+        }
+
+        return statement;
     }
 
     private LetStatement ParserLetStatement()

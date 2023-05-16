@@ -3,22 +3,16 @@ using DotMonkey.Parser.AST.Interfaces;
 
 namespace DotMonkey.Parser.AST.Statements;
 
-public class LetStatement : IStatement
+public class ReturnStatement : IStatement
 {
-    public Token Token { get; init; }
-    /// <summary>
-    /// Hold the identifier of the binding.
-    /// </summary>
-    public Identifier Name { get; set; }
-    /// <summary>
-    /// Expression that produces the value.
-    /// </summary>
+    public Token Token { get; set; }
     public IExpression Value { get; init; }
 
-    public LetStatement(Token token)
+    public ReturnStatement(Token token)
     {
         Token = token;
     }
+
 
     public void StatementNode()
     {
