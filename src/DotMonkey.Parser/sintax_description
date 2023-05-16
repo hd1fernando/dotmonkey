@@ -6,6 +6,40 @@ The AST consists of Nodes that are connectet wich other. Some nodes implments IS
 AST:
 <steatment> := let | return
 
-
 let <identifer> = <expression>;
 return <expression>;
+
+<expressions>
+invoving prefix: 
+	-5 
+	!true 
+	!false
+binary operators: 
+	5 + 5 
+	5 - 5
+	5 / 5
+	5 * 5
+comparison operators:
+	foo == bar 
+	foo != bar 
+	foo < bar 
+	foo > bar
+parenthesis group expressions:
+	5 * (5 + 5) 
+	((5 + 5) * 5) * 5
+call expressions:
+	add(2,3)
+	add(add(2, 3), add(5, 10)) 
+	max(5, add(5, (5 * 5)))
+identifiers expressions:
+	foo * bar / foobar 
+	add(foo, bar)
+funtions literals:
+	(We can use a let statement to bind a function to a name.)
+	let add = fn(x, y) { return x + y };
+
+	(here we use a function literal in place of an identifier:)
+	fn(x, y) { return x + y }(5, 5)
+	(fn(x) { return x }(5) + 10 ) * 10
+if expressions:
+	let result = if (10 > 5) { true } else { false };
