@@ -24,4 +24,9 @@ public class Identifier : IExpression
 
     public string TokenLiteral()
         => Token.Literal;
+
+    public string String()
+    {
+        return Value;
+    }
 }

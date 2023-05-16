@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using DotMonkey.Parser.AST.Interfaces;
 
 namespace DotMonkey.Parser.AST;
@@ -17,6 +19,16 @@ public class Program : INode
 
     public void AddSteatment(IStatement statement)
         => Statements.Add(statement);
+
+    public string String()
+    {
+        StringBuilder sb = new StringBuilder();
+
+        foreach (var statement in Statements)
+            sb.AppendLine(statement.String());
+
+        return sb.ToString();
+    }
 
     public string TokenLiteral()
     {

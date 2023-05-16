@@ -1,5 +1,6 @@
 ﻿using DotMonkey.LexicalAnalizer;
 using DotMonkey.Parser.AST.Interfaces;
+using System.Text;
 
 namespace DotMonkey.Parser.AST.Statements;
 
@@ -26,4 +27,22 @@ public class LetStatement : IStatement
     }
 
     public string TokenLiteral() => Token.Literal;
+
+    public string String()
+    {
+        var sb = new StringBuilder();
+
+        sb.AppendLine(TokenLiteral());
+        sb.AppendLine(Name.String());
+        sb.AppendLine("=");
+
+        if (Value is not null)
+        {
+            sb.AppendLine(Value.String());
+        }
+
+        sb.AppendLine(";");
+
+        return sb.ToString();
+    }
 }

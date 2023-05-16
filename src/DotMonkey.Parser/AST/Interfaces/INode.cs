@@ -7,4 +7,6 @@ public interface INode
     /// </summary>
     /// <returns>Literal value of the token it's associated with.</returns>
     public string TokenLiteral();
+
+    public string String();
 }
