@@ -43,3 +43,15 @@ funtions literals:
 	(fn(x) { return x }(5) + 10 ) * 10
 if expressions:
 	let result = if (10 > 5) { true } else { false };
+
+
+Terminology:
+prefix operator:	 an operator “in front of” its operand. (ex: --5)
+postfix operator:	 an operator “after” its operand. (ex: i++)[Our language doesn't have this kind of operator.]
+infix operators:	 appear in binary expressions - where the operator has two operands. (ex: a * b, * is infix)
+precedence:			 witch which priority do different operators have. (ex: 5 + 5 * 10, 5 * 10 has the higest precedence)
+
+
+
+
+
