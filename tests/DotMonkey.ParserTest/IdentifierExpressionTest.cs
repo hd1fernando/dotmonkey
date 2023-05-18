@@ -1,6 +1,7 @@
 ﻿using DotMonkey.LexicalAnalizer;
 using DotMonkey.Parser.AST;
 using DotMonkey.Parser.AST.Interfaces;
+using DotMonkey.Parser.AST.Statements;
 using FluentAssertions;
 using Xunit;
 
@@ -20,8 +21,9 @@ public class IdentifierExpressionTest
         parser.Errors.Should().BeEmpty();
         result.Statements.Should().HaveCount(1);
         IStatement identifier = result.Statements[0];
-        identifier.Should().BeOfType<Identifier>();
+        identifier.Should().BeOfType<ExpressionStatement>();
+        (identifier as ExpressionStatement).Expression.Should().BeOfType<Identifier>();
         identifier.TokenLiteral().Should().Be(input);
-        (identifier as Identifier).Value.Should().Be(input);
+        ((identifier as ExpressionStatement).Expression as Identifier).Value.Should().Be(input);
     }
 }
