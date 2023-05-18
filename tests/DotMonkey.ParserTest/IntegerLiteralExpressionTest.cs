@@ -7,10 +7,10 @@ using Xunit;
 
 namespace DotMonkey.ParserTest;
 
-public class IdentifierExpressionTest
+public class IntegerLiteralExpressionTest
 {
-    [Theory(DisplayName = "Test IDENT expression")]
-    [InlineData("foobar")]
+    [Theory(DisplayName = "Test INT expression")]
+    [InlineData("5")]
     public void Test(string input)
     {
         var lexer = new Lexer(input);
@@ -22,8 +22,8 @@ public class IdentifierExpressionTest
         result.Statements.Should().HaveCount(1);
         IStatement identifier = result.Statements[0];
         identifier.Should().BeOfType<ExpressionStatement>();
-        (identifier as ExpressionStatement).Expression.Should().BeOfType<Identifier>();
+        (identifier as ExpressionStatement).Expression.Should().BeOfType<IntegerLiteral>();
         identifier.TokenLiteral().Should().Be(input);
-        ((identifier as ExpressionStatement).Expression as Identifier).Value.Should().Be(input);
+        ((identifier as ExpressionStatement).Expression as IntegerLiteral).Value.Should().Be(int.Parse(input));
     }
 }
