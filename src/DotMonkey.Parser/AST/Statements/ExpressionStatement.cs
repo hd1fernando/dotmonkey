@@ -6,7 +6,7 @@ namespace DotMonkey.Parser.AST.Statements;
 public class ExpressionStatement : IStatement
 {
     public Token Token { get; set; } // The first token of the expression
-    public IExpression Expression { get; init; }
+    public IExpression Expression { get; set; }
 
     public ExpressionStatement(Token token)
     {

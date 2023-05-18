@@ -26,6 +26,9 @@ public class Parser
     {
         _lexer = lexer;
 
+
+        RegisterPrefix(Constants.IDENT, ParserIdentifier);
+
         // Read two tokens, so CurrentToken and PeekToken are both set.
         NextToken();
         NextToken();
@@ -71,8 +74,39 @@ public class Parser
         {
             Constants.LET => ParserLetStatement(),
             Constants.RETURN => ParserReturnStatement(),
-            _ => null
+            _ => ParserExpressionStatement()
         };
+    }
+
+    private IExpression ParserIdentifier()
+    {
+        return new Identifier(CurrentToken, CurrentToken.Literal);
+    }
+
+    private ExpressionStatement ParserExpressionStatement()
+    {
+        var statement = new ExpressionStatement(CurrentToken);
+
+        statement.Expression = ParserExpression(Precedences.LOWEST);
+
+        if (PeekTokenIs(Constants.SEMICOLON))
+        {
+            NextToken();
+        }
+
+        return statement;
+    }
+
+    private IExpression ParserExpression(Precedences precedence)
+    {
+        var prefix = PrefixParserFns[CurrentToken.Type];
+
+        if (prefix is null)
+            return null;
+
+        var leftExp = prefix();
+
+        return leftExp;
     }
 
     private ReturnStatement ParserReturnStatement()
@@ -148,4 +182,15 @@ public class Parser
         CurrentToken = PeekToken;
         PeekToken = _lexer.NextToken();
     }
+}
+
+public enum Precedences
+{
+    LOWEST,
+    EQUALS, // ==
+    LESSGREATER, // > OR <
+    SUM, // +
+    PRODUCT, // *
+    PREFIX, // -x or !x
+    CALL, // myFunction(x)
 }
