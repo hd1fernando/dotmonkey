@@ -8,13 +8,8 @@ namespace DotMonkey.Parser.AST;
 
 public class Parser
 {
-    private Dictionary<string, PrefixParserFn> PrefixParserFns = new Dictionary<string, PrefixParserFn>();
-    private Dictionary<string, InfixParserFn> InfixParserFns = new Dictionary<string, InfixParserFn>();
-
-    public delegate IExpression PrefixParserFn();
-    public delegate IExpression InfixParserFn(IExpression expression);
-
-
+    private Dictionary<string, Func<IExpression>> PrefixParserFns = new Dictionary<string, Func<IExpression>>();
+    private Dictionary<string, Func<IExpression, IExpression>> InfixParserFns = new Dictionary<string, Func<IExpression, IExpression>>();
 
     private Lexer _lexer { get; init; }
     public Token CurrentToken { get; private set; }
@@ -27,7 +22,7 @@ public class Parser
         _lexer = lexer;
 
 
-        RegisterPrefix(Constants.IDENT, ParserIdentifier);
+        RegisterPrefix(Constants.IDENT, () => new Identifier(CurrentToken, CurrentToken.Literal));
 
         // Read two tokens, so CurrentToken and PeekToken are both set.
         NextToken();
@@ -56,13 +51,12 @@ public class Parser
     }
 
 
-    public void RegisterPrefix(string constant, PrefixParserFn fn)
+    private void RegisterPrefix(string constant, Func<IExpression> fn)
     {
-        //PrefixParserFns[constant] = fn;
         PrefixParserFns.Add(constant, fn);
     }
 
-    public void RegisterInfix(string constant, InfixParserFn fn)
+    private void RegisterInfix(string constant, Func<IExpression,IExpression> fn)
     {
         InfixParserFns.Add(constant, fn);
     }
@@ -76,11 +70,6 @@ public class Parser
             Constants.RETURN => ParserReturnStatement(),
             _ => ParserExpressionStatement()
         };
-    }
-
-    private IExpression ParserIdentifier()
-    {
-        return new Identifier(CurrentToken, CurrentToken.Literal);
     }
 
     private ExpressionStatement ParserExpressionStatement()
