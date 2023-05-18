@@ -9,7 +9,7 @@ namespace DotMonkey.ParserTest;
 
 public class IdentifierExpressionTest
 {
-    [Theory]
+    [Theory(DisplayName = "Test IDENT expression")]
     [InlineData("foobar")]
     public void Test(string input)
     {

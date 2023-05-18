@@ -99,7 +99,7 @@ public class Parser
 
     private IExpression ParserExpression(Precedences precedence)
     {
-        var prefix = PrefixParserFns[CurrentToken.Type];
+        PrefixParserFns.TryGetValue(CurrentToken.Type, out var prefix);
 
         if (prefix is null)
             return null;
