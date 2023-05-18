@@ -1,4 +1,5 @@
 ﻿using DotMonkey.LexicalAnalizer;
+using DotMonkey.Parser.AST.Expressions;
 using DotMonkey.Parser.AST.Interfaces;
 using DotMonkey.Parser.AST.Statements;
 using System;
@@ -23,6 +24,7 @@ public class Parser
 
 
         RegisterPrefix(Constants.IDENT, () => new Identifier(CurrentToken, CurrentToken.Literal));
+        RegisterPrefix(Constants.INT, ParserIntergerLiteral);
 
         // Read two tokens, so CurrentToken and PeekToken are both set.
         NextToken();
@@ -56,11 +58,26 @@ public class Parser
         PrefixParserFns.Add(constant, fn);
     }
 
-    private void RegisterInfix(string constant, Func<IExpression,IExpression> fn)
+    private void RegisterInfix(string constant, Func<IExpression, IExpression> fn)
     {
         InfixParserFns.Add(constant, fn);
     }
 
+    private IExpression ParserIntergerLiteral()
+    {
+        var lit = new IntegerLiteral(CurrentToken);
+
+        if (int.TryParse(CurrentToken.Literal, out var value) == false)
+        {
+            var message = $"Could not parser {CurrentToken.Literal} as interger";
+            Errors.Add(message);
+            return null;
+        }
+
+        lit.Value = value;
+
+        return lit;
+    }
 
     private IStatement ParserStatement()
     {

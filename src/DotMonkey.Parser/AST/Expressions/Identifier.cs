@@ -1,7 +1,7 @@
 ﻿using DotMonkey.LexicalAnalizer;
 using DotMonkey.Parser.AST.Interfaces;
 
-namespace DotMonkey.Parser.AST;
+namespace DotMonkey.Parser.AST.Expressions;
 
 /// <summary>
 /// Represents the name in a varible binding.
