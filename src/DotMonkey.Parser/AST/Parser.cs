@@ -12,6 +12,18 @@ public class Parser
     private Dictionary<string, Func<IExpression>> PrefixParserFns = new Dictionary<string, Func<IExpression>>();
     private Dictionary<string, Func<IExpression, IExpression>> InfixParserFns = new Dictionary<string, Func<IExpression, IExpression>>();
 
+    private Dictionary<string, Precedences> _precedenceTable = new Dictionary<string, Precedences>
+    {
+        {Constants.EQ, Precedences.EQUALS },
+        {Constants.NOT_EQ, Precedences.EQUALS },
+        {Constants.LT, Precedences.LESSGREATER },
+        {Constants.GT, Precedences.LESSGREATER },
+        {Constants.PLUS, Precedences.SUM },
+        {Constants.MINUS, Precedences.SUM },
+        {Constants.SLASH, Precedences.PRODUCT },
+        {Constants.ASTERISK, Precedences.PRODUCT },
+    };
+
     private Lexer _lexer { get; init; }
     public Token CurrentToken { get; private set; }
     public Token PeekToken { get; private set; }
@@ -27,6 +39,15 @@ public class Parser
         RegisterPrefix(Constants.INT, ParserIntergerLiteral);
         RegisterPrefix(Constants.BANG, ParserPrefixExpression);
         RegisterPrefix(Constants.MINUS, ParserPrefixExpression);
+
+        RegisterInfix(Constants.PLUS, ParserInfixExpression);
+        RegisterInfix(Constants.MINUS, ParserInfixExpression);
+        RegisterInfix(Constants.SLASH, ParserInfixExpression);
+        RegisterInfix(Constants.ASTERISK, ParserInfixExpression);
+        RegisterInfix(Constants.EQ, ParserInfixExpression);
+        RegisterInfix(Constants.NOT_EQ, ParserInfixExpression);
+        RegisterInfix(Constants.LT, ParserInfixExpression);
+        RegisterInfix(Constants.GT, ParserInfixExpression);
 
         // Read two tokens, so CurrentToken and PeekToken are both set.
         NextToken();
@@ -92,6 +113,18 @@ public class Parser
         return expression;
     }
 
+    private IExpression ParserInfixExpression(IExpression left)
+    {
+        var expression = new InfixExpression(CurrentToken, left, CurrentToken.Literal);
+
+        var precedence = CurrentPrecedence();
+        NextToken();
+        expression.Rigth = ParserExpression(precedence);
+
+        return expression;
+
+    }
+
     private IStatement ParserStatement()
     {
         return CurrentToken.Type switch
@@ -127,6 +160,18 @@ public class Parser
         }
 
         var leftExp = prefix();
+
+        while (PeekTokenIs(Constants.SEMICOLON) == false && precedence < PeekPrecedence())
+        {
+            InfixParserFns.TryGetValue(PeekToken.Type, out var infix);
+
+            if (infix is null)
+                return leftExp;
+
+            NextToken();
+
+            leftExp = infix(leftExp);
+        }
 
         return leftExp;
     }
@@ -182,6 +227,24 @@ public class Parser
         Errors.Add(message);
     }
 
+    private Precedences PeekPrecedence()
+    {
+        if (_precedenceTable.TryGetValue(PeekToken.Type, out var value))
+        {
+            return value;
+        }
+        return Precedences.LOWEST;
+    }
+
+    private Precedences CurrentPrecedence()
+    {
+        if (_precedenceTable.TryGetValue(CurrentToken.Type, out var value))
+        {
+            return value;
+        }
+        return Precedences.LOWEST;
+    }
+
     private bool CurrentTokenIs(string constant)
     {
         return CurrentToken.Type == constant;
@@ -214,6 +277,7 @@ public class Parser
 
 public enum Precedences
 {
+    // the order is important in here. Don't change.
     LOWEST,
     EQUALS, // ==
     LESSGREATER, // > OR <
