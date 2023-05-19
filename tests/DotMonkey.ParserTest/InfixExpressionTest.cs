@@ -46,7 +46,7 @@ public class InfixExpressionTest
     [InlineData("a + b - c", "((a+b)-c)")]
     [InlineData("a * b * c", "((a*b)*c)")]
     [InlineData("a * b / c", "((a*b)/c)")]
-    [InlineData("a + b / c", "((a+(b/c)")]
+    [InlineData("a + b / c", "(a+(b/c)")]
     [InlineData("a + b * c + d / e - f", "(((a+(b*c))+(d/e))-f)")]
     [InlineData("3 + 4; -5 * 5", "(3+4)((-5)*5)")]
     [InlineData("5 > 4 == 3 < 4", "((5>4)==(3<4))")]
