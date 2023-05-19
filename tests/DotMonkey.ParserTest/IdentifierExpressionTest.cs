@@ -24,6 +24,6 @@ public class IdentifierExpressionTest
         identifier.Should().BeOfType<ExpressionStatement>();
         (identifier as ExpressionStatement).Expression.Should().BeOfType<Identifier>();
         identifier.TokenLiteral().Should().Be(input);
-        ((identifier as ExpressionStatement).Expression as Identifier).Value.Should().Be(input);
+        ((identifier as ExpressionStatement).Expression as Identifier).Value.Should().BeEquivalentTo(input);
     }
 }
