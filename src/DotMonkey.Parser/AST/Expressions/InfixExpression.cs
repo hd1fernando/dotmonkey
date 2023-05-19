@@ -6,7 +6,7 @@ namespace DotMonkey.Parser.AST.Expressions;
 
 public class InfixExpression : IExpression
 {
-  
+
     public Token Token { get; init; }
     public IExpression Left { get; init; }
     public string Operator { get; init; }
@@ -29,7 +29,7 @@ public class InfixExpression : IExpression
         var sb = new StringBuilder();
         sb.Append("(");
         sb.Append(Left.String());
-        sb.Append(" " + Operator + " ");
+        sb.Append(Operator);
         sb.Append(Rigth.String());
         sb.Append(")");
 

@@ -25,7 +25,7 @@ public class Program : INode
         StringBuilder sb = new StringBuilder();
 
         foreach (var statement in Statements)
-            sb.AppendLine(statement.String());
+            sb.Append(statement.String());
 
         return sb.ToString();
     }
