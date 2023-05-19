@@ -25,6 +25,8 @@ public class Parser
 
         RegisterPrefix(Constants.IDENT, () => new Identifier(CurrentToken, CurrentToken.Literal));
         RegisterPrefix(Constants.INT, ParserIntergerLiteral);
+        RegisterPrefix(Constants.BANG, ParserPrefixExpression);
+        RegisterPrefix(Constants.MINUS, ParserPrefixExpression);
 
         // Read two tokens, so CurrentToken and PeekToken are both set.
         NextToken();
@@ -79,6 +81,17 @@ public class Parser
         return lit;
     }
 
+    private IExpression ParserPrefixExpression()
+    {
+        var expression = new PrefixExpression(CurrentToken, CurrentToken.Literal);
+
+        NextToken();
+
+        expression.Rigth = ParserExpression(Precedences.PREFIX);
+
+        return expression;
+    }
+
     private IStatement ParserStatement()
     {
         return CurrentToken.Type switch
@@ -108,7 +121,10 @@ public class Parser
         PrefixParserFns.TryGetValue(CurrentToken.Type, out var prefix);
 
         if (prefix is null)
+        {
+            NoPrefixParserFnError(CurrentToken.Type);
             return null;
+        }
 
         var leftExp = prefix();
 
@@ -187,6 +203,12 @@ public class Parser
     {
         CurrentToken = PeekToken;
         PeekToken = _lexer.NextToken();
+    }
+
+    private void NoPrefixParserFnError(string constant)
+    {
+        var message = $"no prefix parser for function {constant} found";
+        Errors.Add(message);
     }
 }
 

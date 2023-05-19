@@ -8,6 +8,7 @@ AST:
 
 let <identifer> = <expression>;
 return <expression>;
+<prefix operator><expression>;
 
 <expressions>
 invoving prefix: 
