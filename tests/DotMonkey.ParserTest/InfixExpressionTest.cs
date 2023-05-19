@@ -38,4 +38,29 @@ public class InfixExpressionTest
         ((identifier as ExpressionStatement).Expression as InfixExpression).Left.Should().BeOfType<IntegerLiteral>();
         (((identifier as ExpressionStatement).Expression as InfixExpression).Left as IntegerLiteral).Value.Should().Be(rightValue);
     }
+
+    [Theory(DisplayName = "Test Prefix expression")]
+    [InlineData("-a*b", "((-a)*b)")]
+    [InlineData("!-a", "(!(-a))")]
+    [InlineData("a+b+c", "((a+b)+c)")]
+    [InlineData("a + b - c", "((a+b)-c)")]
+    [InlineData("a * b * c", "((a*b)*c)")]
+    [InlineData("a * b / c", "((a*b)/c)")]
+    [InlineData("a + b / c", "((a+(b/c)")]
+    [InlineData("a + b * c + d / e - f", "(((a+(b*c))+(d/e))-f)")]
+    [InlineData("3 + 4; -5 * 5", "(3+4)((-5)*5)")]
+    [InlineData("5 > 4 == 3 < 4", "((5>4)==(3<4))")]
+    [InlineData("5 < 4 != 3 > 4", "((5<4)!=(3>4))")]
+    [InlineData("3 + 4 * 5 == 3 * 1 + 4 * 5", "((3+(4*5))==((3*1)+(4*5)))")]
+    public void test2(string input, string exptectedString)
+    {
+        var lexer = new Lexer(input);
+        var parser = new Parser.AST.Parser(lexer);
+        var program = parser.ParserProgram();
+
+        var result = program.String();
+
+        parser.Errors.Should().BeEmpty();
+        result.Should().BeEquivalentTo(exptectedString);
+    }
 }
