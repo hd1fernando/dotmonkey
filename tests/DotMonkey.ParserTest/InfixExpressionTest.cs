@@ -8,7 +8,7 @@ namespace DotMonkey.ParserTest;
 
 public class InfixExpressionTest
 {
-    [Theory(DisplayName = "Test Prefix expression")]
+    [Theory(DisplayName = "Test parsing infix expression")]
     [InlineData("5 + 5", 5, "+", 5)]
     [InlineData("5 - 5", 5, "-", 5)]
     [InlineData("5 * 5", 5, "*", 5)]
@@ -17,7 +17,10 @@ public class InfixExpressionTest
     [InlineData("5 < 5", 5, "<", 5)]
     [InlineData("5 == 5", 5, "==", 5)]
     [InlineData("5 != 5", 5, "!=", 5)]
-    public void Test(string input, int leftValue, string @operator, int rightValue)
+    [InlineData("true == true", true, "==", true)]
+    [InlineData("true != false", true, "!=", false)]
+    [InlineData("false == false", false, "==", false)]
+    public void Test(string input, object leftValue, string @operator, object rightValue)
     {
         var lexer = new Lexer(input);
         var parser = new Parser.AST.Parser(lexer);
@@ -32,7 +35,7 @@ public class InfixExpressionTest
         Helpers.TestInfixExpression((identifier as ExpressionStatement).Expression, leftValue, @operator, rightValue);
     }
 
-    [Theory(DisplayName = "Test Prefix expression")]
+    [Theory(DisplayName = "Test operator precedence parsing")]
     [InlineData("-a*b", "((-a)*b)")]
     [InlineData("!-a", "(!(-a))")]
     [InlineData("a+b+c", "((a+b)+c)")]
@@ -45,7 +48,11 @@ public class InfixExpressionTest
     [InlineData("5 > 4 == 3 < 4", "((5>4)==(3<4))")]
     [InlineData("5 < 4 != 3 > 4", "((5<4)!=(3>4))")]
     [InlineData("3 + 4 * 5 == 3 * 1 + 4 * 5", "((3+(4*5))==((3*1)+(4*5)))")]
-    [InlineData("1+2+3;","((1+2)+3)")]
+    [InlineData("1+2+3;", "((1+2)+3)")]
+    [InlineData("true", "true")]
+    [InlineData("false", "false")]
+    [InlineData("3 > 5 == false", "((3>5)==false)")]
+    [InlineData("3 < 5 == true", "((3<5)==true)")]
     public void test2(string input, string exptectedString)
     {
         var lexer = new Lexer(input);

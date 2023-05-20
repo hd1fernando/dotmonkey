@@ -59,4 +59,11 @@ public static class Helpers
         expression.TokenLiteral().Should().BeEquivalentTo(value.ToString());
         (expression as BooleanExpression).Value.Should().Be(value);
     }
+
+    internal static void TestPrefix(IExpression expression, string @operator)
+    {
+        expression.Should().BeOfType<PrefixExpression>();
+        expression.TokenLiteral().Should().BeEquivalentTo(@operator.ToString());
+        (expression as PrefixExpression).Operator.Should().Be(@operator);
+    }
 }

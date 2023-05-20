@@ -9,10 +9,12 @@ namespace DotMonkey.ParserTest;
 
 public class PrefixExpressionTest
 {
-    [Theory(DisplayName = "Test Prefix expression")]
+    [Theory(DisplayName = "Test parsing Prefix expression")]
     [InlineData("!5", "!", 5)]
     [InlineData("-15", "-", 15)]
-    public void Test(string input, string @operator, int intValue)
+    [InlineData("!true", "!", true)]
+    [InlineData("!false", "!", false)]
+    public void Test(string input, string @operator, object value)
     {
         var lexer = new Lexer(input);
         var parser = new Parser.AST.Parser(lexer);
@@ -23,11 +25,9 @@ public class PrefixExpressionTest
         result.Statements.Should().HaveCount(1);
         IStatement identifier = result.Statements[0];
         identifier.Should().BeOfType<ExpressionStatement>();
-        (identifier as ExpressionStatement).Expression.Should().BeOfType<PrefixExpression>();
-        identifier.TokenLiteral().Should().Be(@operator);
-        ((identifier as ExpressionStatement).Expression as PrefixExpression).Operator.Should().BeEquivalentTo(@operator);
 
-        ((identifier as ExpressionStatement).Expression as PrefixExpression).Rigth.Should().BeOfType<IntegerLiteral>();
-        (((identifier as ExpressionStatement).Expression as PrefixExpression).Rigth as IntegerLiteral).Value.Should().Be(intValue);
+        Helpers.TestPrefix((identifier as ExpressionStatement).Expression, @operator);
+
+        Helpers.TestLiteralExpression(((identifier as ExpressionStatement).Expression as PrefixExpression).Rigth, value);
     }
 }
