@@ -6,10 +6,11 @@ using Xunit;
 
 namespace DotMonkey.ParserTest;
 
-public class IdentifierExpressionTest
+public class BooleanExpressionTest
 {
-    [Theory(DisplayName = "Test IDENT expression")]
-    [InlineData("foobar")]
+    [Theory(DisplayName = "Test Boolan expression")]
+    [InlineData("true")]
+    [InlineData("false")]
     public void Test(string input)
     {
         var lexer = new Lexer(input);
@@ -21,7 +22,7 @@ public class IdentifierExpressionTest
         result.Statements.Should().HaveCount(1);
         IStatement identifier = result.Statements[0];
         identifier.Should().BeOfType<ExpressionStatement>();
-        Helpers.TestIdentifier((identifier as ExpressionStatement).Expression, input);
+        Helpers.TestBoolean((identifier as ExpressionStatement).Expression, bool.Parse(input));
     }
 }
 

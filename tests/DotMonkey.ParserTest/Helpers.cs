@@ -1,9 +1,8 @@
 ﻿using DotMonkey.Parser.AST.Expressions;
 using DotMonkey.Parser.AST.Interfaces;
-using DotMonkey.Parser.AST.Statements;
 using FluentAssertions;
+using Newtonsoft.Json.Linq;
 using System;
-using System.Linq.Expressions;
 
 namespace DotMonkey.ParserTest;
 
@@ -30,6 +29,10 @@ public static class Helpers
         {
             TestIntegerLiteral(expression, int.Parse(type.ToString()));
         }
+        else if (t == typeof(bool))
+        {
+            TestBoolean(expression, bool.Parse(type.ToString()));
+        }
         else
         {
             throw new NotImplementedException();
@@ -48,5 +51,12 @@ public static class Helpers
         expression.Should().BeOfType<IntegerLiteral>();
         expression.TokenLiteral().Should().Be(value.ToString());
         (expression as IntegerLiteral).Value.Should().Be(value);
+    }
+
+    internal static void TestBoolean(IExpression expression, bool value)
+    {
+        expression.Should().BeOfType<BooleanExpression>();
+        expression.TokenLiteral().Should().BeEquivalentTo(value.ToString());
+        (expression as BooleanExpression).Value.Should().Be(value);
     }
 }
