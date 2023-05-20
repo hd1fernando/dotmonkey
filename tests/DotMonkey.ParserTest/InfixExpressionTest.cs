@@ -53,6 +53,11 @@ public class InfixExpressionTest
     [InlineData("false", "false")]
     [InlineData("3 > 5 == false", "((3>5)==false)")]
     [InlineData("3 < 5 == true", "((3<5)==true)")]
+    [InlineData("1 + (2 + 3) + 4", "((1+(2+3))+4)")]
+    [InlineData("(5 + 5) * 2", "((5+5)*2)")]
+    [InlineData("2 / (5 + 5)", "(2/(5+5))")]
+    [InlineData("-(5 + 5)", "(-(5+5))")]
+    [InlineData("!(true == true)", "(!(true==true))")]
     public void test2(string input, string exptectedString)
     {
         var lexer = new Lexer(input);
