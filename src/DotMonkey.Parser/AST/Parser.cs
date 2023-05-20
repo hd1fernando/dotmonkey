@@ -41,6 +41,7 @@ public class Parser
         RegisterPrefix(Constants.MINUS, ParserPrefixExpression);
         RegisterPrefix(Constants.TRUE, ParserBoolean);
         RegisterPrefix(Constants.FALSE, ParserBoolean);
+        RegisterPrefix(Constants.LPARENT, ParserGroupedExpressions);
 
         RegisterInfix(Constants.PLUS, ParserInfixExpression);
         RegisterInfix(Constants.MINUS, ParserInfixExpression);
@@ -109,7 +110,19 @@ public class Parser
         return new BooleanExpression(CurrentToken, CurrentTokenIs(Constants.TRUE));
     }
 
+    private IExpression ParserGroupedExpressions()
+    {
+        NextToken();
 
+        var expression = ParserExpression(Precedences.LOWEST);
+
+        if(ExpectedPeek(Constants.RPARENT) == false)
+        {
+            return null;
+        }
+
+        return expression;
+    }
     private IExpression ParserPrefixExpression()
     {
         var expression = new PrefixExpression(CurrentToken, CurrentToken.Literal);
