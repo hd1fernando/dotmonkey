@@ -42,6 +42,7 @@ public class Parser
         RegisterPrefix(Constants.TRUE, ParserBoolean);
         RegisterPrefix(Constants.FALSE, ParserBoolean);
         RegisterPrefix(Constants.LPARENT, ParserGroupedExpressions);
+        RegisterPrefix(Constants.IF, ParserIfExpression);
 
         RegisterInfix(Constants.PLUS, ParserInfixExpression);
         RegisterInfix(Constants.MINUS, ParserInfixExpression);
@@ -116,13 +117,45 @@ public class Parser
 
         var expression = ParserExpression(Precedences.LOWEST);
 
-        if(ExpectedPeek(Constants.RPARENT) == false)
+        if (ExpectedPeek(Constants.RPARENT) == false)
         {
             return null;
         }
 
         return expression;
     }
+
+    private IExpression ParserIfExpression()
+    {
+        var expression = new IfExpression(CurrentToken);
+
+        if (ExpectedPeek(Constants.LPARENT) == false)
+            return null;
+
+        NextToken();
+
+        expression.Condition = ParserExpression(Precedences.LOWEST);
+
+        if (ExpectedPeek(Constants.RPARENT) == false)
+            return null;
+        if (ExpectedPeek(Constants.LBRACE) == false)
+            return null;
+
+        expression.Consequence = ParserBlockStatement();
+
+        if (PeekTokenIs(Constants.ELSE))
+        {
+            NextToken();
+
+            if (ExpectedPeek(Constants.LBRACE) == false)
+                return null;
+
+            expression.Alternative = ParserBlockStatement();
+        }
+
+        return expression;
+    }
+
     private IExpression ParserPrefixExpression()
     {
         var expression = new PrefixExpression(CurrentToken, CurrentToken.Literal);
@@ -210,6 +243,27 @@ public class Parser
         }
 
         return statement;
+    }
+
+    private BlockStatement ParserBlockStatement()
+    {
+        var blockStatement = new BlockStatement(CurrentToken);
+
+        NextToken();
+
+        while (CurrentTokenIs(Constants.RBRACE) == false && CurrentTokenIs(Constants.EOF) == false)
+        {
+            var statement = ParserStatement();
+
+            if (statement is not null)
+            {
+                blockStatement.AddStatement(statement);
+            }
+
+            NextToken();
+        }
+
+        return blockStatement;
     }
 
     private LetStatement ParserLetStatement()

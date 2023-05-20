@@ -10,6 +10,7 @@ let <identifer> = <expression>;
 return <expression>;
 <prefix operator><expression>;
 <expression><infix operator><expression>;
+if(<condition>)<consequence>  else <alternative>
 
 <expressions>
 invoving prefix: 
