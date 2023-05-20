@@ -3,6 +3,7 @@ using DotMonkey.Parser.AST.Expressions;
 using DotMonkey.Parser.AST.Interfaces;
 using DotMonkey.Parser.AST.Statements;
 using FluentAssertions;
+using FluentAssertions.Equivalency.Tracing;
 using Xunit;
 
 namespace DotMonkey.ParserTest;
@@ -52,6 +53,7 @@ public class InfixExpressionTest
     [InlineData("5 > 4 == 3 < 4", "((5>4)==(3<4))")]
     [InlineData("5 < 4 != 3 > 4", "((5<4)!=(3>4))")]
     [InlineData("3 + 4 * 5 == 3 * 1 + 4 * 5", "((3+(4*5))==((3*1)+(4*5)))")]
+    [InlineData("1+2+3;","((1+2)+3)")]
     public void test2(string input, string exptectedString)
     {
         var lexer = new Lexer(input);

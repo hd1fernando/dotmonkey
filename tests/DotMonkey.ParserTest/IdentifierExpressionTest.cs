@@ -22,8 +22,7 @@ public class IdentifierExpressionTest
         result.Statements.Should().HaveCount(1);
         IStatement identifier = result.Statements[0];
         identifier.Should().BeOfType<ExpressionStatement>();
-        (identifier as ExpressionStatement).Expression.Should().BeOfType<Identifier>();
-        identifier.TokenLiteral().Should().Be(input);
-        ((identifier as ExpressionStatement).Expression as Identifier).Value.Should().BeEquivalentTo(input);
+        Helpers.TestIdentifier((identifier as ExpressionStatement).Expression, input);
     }
 }
+

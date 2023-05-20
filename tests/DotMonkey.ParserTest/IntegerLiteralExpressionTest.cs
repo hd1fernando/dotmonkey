@@ -22,8 +22,6 @@ public class IntegerLiteralExpressionTest
         result.Statements.Should().HaveCount(1);
         IStatement identifier = result.Statements[0];
         identifier.Should().BeOfType<ExpressionStatement>();
-        (identifier as ExpressionStatement).Expression.Should().BeOfType<IntegerLiteral>();
-        identifier.TokenLiteral().Should().Be(input);
-        ((identifier as ExpressionStatement).Expression as IntegerLiteral).Value.Should().Be(int.Parse(input));
-    }
+        Helpers.TestIntegerLiteral((identifier as ExpressionStatement).Expression, int.Parse(input));
+    }   
 }
