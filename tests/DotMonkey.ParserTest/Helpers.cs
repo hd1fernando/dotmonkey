@@ -1,7 +1,6 @@
 ﻿using DotMonkey.Parser.AST.Expressions;
 using DotMonkey.Parser.AST.Interfaces;
 using FluentAssertions;
-using Newtonsoft.Json.Linq;
 using System;
 
 namespace DotMonkey.ParserTest;
