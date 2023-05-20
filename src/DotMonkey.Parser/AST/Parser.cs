@@ -39,6 +39,8 @@ public class Parser
         RegisterPrefix(Constants.INT, ParserIntergerLiteral);
         RegisterPrefix(Constants.BANG, ParserPrefixExpression);
         RegisterPrefix(Constants.MINUS, ParserPrefixExpression);
+        RegisterPrefix(Constants.TRUE, ParserBoolean);
+        RegisterPrefix(Constants.FALSE, ParserBoolean);
 
         RegisterInfix(Constants.PLUS, ParserInfixExpression);
         RegisterInfix(Constants.MINUS, ParserInfixExpression);
@@ -101,6 +103,12 @@ public class Parser
 
         return lit;
     }
+
+    private IExpression ParserBoolean()
+    {
+        return new BooleanExpression(CurrentToken, CurrentTokenIs(Constants.TRUE));
+    }
+
 
     private IExpression ParserPrefixExpression()
     {
