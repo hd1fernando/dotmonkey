@@ -58,6 +58,9 @@ public class InfixExpressionTest
     [InlineData("2 / (5 + 5)", "(2/(5+5))")]
     [InlineData("-(5 + 5)", "(-(5+5))")]
     [InlineData("!(true == true)", "(!(true==true))")]
+    [InlineData("a + add(b * c) + d", "((a+add((b*c)))+d)")]
+    [InlineData("add(a, b, 1, 2 * 3, 4 + 5, add(6, 7 * 8))", "add(a,b,1,(2*3),(4+5),add(6,(7*8)))")]
+    [InlineData("add(a + b + c * d / f + g)", "add((((a+b)+((c*d)/f))+g))")]
     public void test2(string input, string exptectedString)
     {
         var lexer = new Lexer(input);
