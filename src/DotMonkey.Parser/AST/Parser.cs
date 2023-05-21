@@ -22,6 +22,7 @@ public class Parser
         {Constants.MINUS, Precedences.SUM },
         {Constants.SLASH, Precedences.PRODUCT },
         {Constants.ASTERISK, Precedences.PRODUCT },
+        {Constants.LPARENT, Precedences.CALL },
     };
 
     private Lexer _lexer { get; init; }
@@ -53,6 +54,7 @@ public class Parser
         RegisterInfix(Constants.NOT_EQ, ParserInfixExpression);
         RegisterInfix(Constants.LT, ParserInfixExpression);
         RegisterInfix(Constants.GT, ParserInfixExpression);
+        RegisterInfix(Constants.LPARENT, ParserCallExpression);
 
         // Read two tokens, so CurrentToken and PeekToken are both set.
         NextToken();
@@ -226,6 +228,41 @@ public class Parser
 
         return expression;
 
+    }
+
+    private IExpression ParserCallExpression(IExpression function)
+    {
+        var callExpression = new CallExpression(CurrentToken, function, ParserCallArguments());
+
+        return callExpression;
+    }
+
+    private List<IExpression> ParserCallArguments()
+    {
+        var args = new List<IExpression>();
+
+        if (PeekTokenIs(Constants.RPARENT))
+        {
+            NextToken();
+            return args;
+        }
+
+        NextToken();
+
+        args.Add(ParserExpression(Precedences.LOWEST));
+
+        while (PeekTokenIs(Constants.COMMA))
+        {
+            NextToken();
+            NextToken();
+
+            args.Add(ParserExpression(Precedences.LOWEST));
+        }
+
+        if (ExpectedPeek(Constants.RPARENT) == false)
+            return null;
+
+        return args;
     }
 
     private IStatement ParserStatement()

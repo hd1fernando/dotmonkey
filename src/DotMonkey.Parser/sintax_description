@@ -12,7 +12,7 @@ return <expression>;
 <expression><infix operator><expression>;
 if(<condition>)<consequence>  else <alternative>
 fn<parameters><block statement>
-
+call expression := <expression>(<comma separated expression>)
 
 <expressions>
 invoving prefix: 
