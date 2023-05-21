@@ -1,5 +1,6 @@
 ﻿using DotMonkey.Parser.AST.Expressions;
 using DotMonkey.Parser.AST.Interfaces;
+using DotMonkey.Parser.AST.Statements;
 using FluentAssertions;
 using System;
 
@@ -52,17 +53,24 @@ public static class Helpers
         (expression as IntegerLiteral).Value.Should().Be(value);
     }
 
-    internal static void TestBoolean(IExpression expression, bool value)
+    public static void TestBoolean(IExpression expression, bool value)
     {
         expression.Should().BeOfType<BooleanExpression>();
         expression.TokenLiteral().Should().BeEquivalentTo(value.ToString());
         (expression as BooleanExpression).Value.Should().Be(value);
     }
 
-    internal static void TestPrefix(IExpression expression, string @operator)
+    public static void TestPrefix(IExpression expression, string @operator)
     {
         expression.Should().BeOfType<PrefixExpression>();
         expression.TokenLiteral().Should().BeEquivalentTo(@operator.ToString());
         (expression as PrefixExpression).Operator.Should().Be(@operator);
+    }
+
+    public static void TestLetStatement(IStatement statement, object expectedIdentifier)
+    {
+        statement.Should().BeOfType<LetStatement>();
+        (statement as LetStatement).Name.Value.Should().Be(expectedIdentifier.ToString());
+
     }
 }

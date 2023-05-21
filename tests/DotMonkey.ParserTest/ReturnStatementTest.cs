@@ -1,5 +1,6 @@
 ﻿using DotMonkey.LexicalAnalizer;
 using DotMonkey.Parser.AST;
+using DotMonkey.Parser.AST.Statements;
 using FluentAssertions;
 using Xunit;
 
@@ -19,5 +20,22 @@ public class ReturnStatementTest
 
         result.Should().NotBeNull();
         result.TokenLiteral().Should().BeEquivalentTo("return");
+    }
+
+
+    [Theory()]
+    [InlineData("return x;", "x")]
+    [InlineData("return 5;", 5)]
+    public void Test(string input, object expectedValue)
+    {
+        var lexer = new Lexer(input);
+        var parser = new Parser.AST.Parser(lexer);
+
+        Program program = parser.ParserProgram();
+
+        program.Statements.Should().HaveCount(1);
+        var statement = program.Statements[0];
+
+        Helpers.TestLiteralExpression((statement as ReturnStatement).ReturnValue, expectedValue);
     }
 }
