@@ -14,12 +14,20 @@ public struct ObjectType
 
     public const string INTERGER_OBJ = "INTERGER";
     public const string BOOLEAN_OBJ = "BOOLEAN";
+    public const string NULL_OBJ = "NULL";
 }
 
 public interface IObject
 {
     public ObjectType Type();
     public string Inspect();
+}
+
+public struct NULL : IObject
+{
+    public string Inspect() => "NULL";
+
+    public ObjectType Type() => ObjectType.NULL_OBJ;
 }
 
 public struct Boolean : IObject
