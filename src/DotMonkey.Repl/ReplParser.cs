@@ -1,6 +1,8 @@
 ﻿using DotMonkey.LexicalAnalizer;
+using Pastel;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace DotMonkey
 {
@@ -38,9 +40,9 @@ namespace DotMonkey
 
         private void PrintParserErrors(List<string> errors)
         {
-            Console.WriteLine("parser erros:");
+            Console.WriteLine("parser erros:".Pastel(Color.Red));
             foreach (var error in errors)
-                Console.WriteLine("\t" + error);
+                Console.WriteLine("\t" + error.Pastel(Color.Red));
         }
     }
 }
