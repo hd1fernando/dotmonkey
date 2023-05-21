@@ -15,7 +15,7 @@ public class LetStatement : IStatement
     /// <summary>
     /// Expression that produces the value.
     /// </summary>
-    public IExpression Value { get; init; }
+    public IExpression Value { get; set; }
 
     public LetStatement(Token token)
     {

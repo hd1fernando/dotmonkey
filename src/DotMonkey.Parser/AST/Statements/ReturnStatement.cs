@@ -7,7 +7,7 @@ namespace DotMonkey.Parser.AST.Statements;
 public class ReturnStatement : IStatement
 {
     public Token Token { get; set; }
-    public IExpression Value { get; init; }
+    public IExpression ReturnValue { get; set; }
 
     public ReturnStatement(Token token)
     {
@@ -28,9 +28,9 @@ public class ReturnStatement : IStatement
 
         sb.Append(TokenLiteral());
 
-        if (Value is not null)
+        if (ReturnValue is not null)
         {
-            sb.AppendLine(Value.String());
+            sb.AppendLine(ReturnValue.String());
         }
 
         sb.AppendLine(";");

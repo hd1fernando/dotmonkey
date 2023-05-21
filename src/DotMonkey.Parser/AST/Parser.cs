@@ -322,8 +322,9 @@ public class Parser
 
         NextToken();
 
-        // TODO: we're skipping the expression until we enconter a semicolon
-        while (CurrentTokenIs(Constants.SEMICOLON) == false)
+        statement.ReturnValue = ParserExpression(Precedences.LOWEST);
+
+        if (PeekTokenIs(Constants.SEMICOLON))
         {
             NextToken();
         }
@@ -368,8 +369,11 @@ public class Parser
             return null;
         }
 
-        // TODO: we're skipping the expression until we enconter a semicolon
-        while (CurrentTokenIs(Constants.SEMICOLON) == false)
+        NextToken();
+
+        statement.Value = ParserExpression(Precedences.LOWEST);
+
+        if (PeekTokenIs(Constants.SEMICOLON))
         {
             NextToken();
         }
