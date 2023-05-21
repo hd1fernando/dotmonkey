@@ -14,7 +14,7 @@ namespace DotMonkey.Cli
             Console.WriteLine($"Mokey Language {langVersion} ({langType})");
             Console.WriteLine($"[DotMonkey {interpreterVersion}]");
 
-            new Repl().Start();
+            new ReplParser().Start();
         }
     }
 }
