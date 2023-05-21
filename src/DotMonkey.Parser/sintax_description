@@ -11,6 +11,8 @@ return <expression>;
 <prefix operator><expression>;
 <expression><infix operator><expression>;
 if(<condition>)<consequence>  else <alternative>
+fn<parameters><block statement>
+
 
 <expressions>
 invoving prefix: 

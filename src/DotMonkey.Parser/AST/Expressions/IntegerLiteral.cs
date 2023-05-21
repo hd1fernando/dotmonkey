@@ -12,7 +12,7 @@ public class IntegerLiteral : IExpression
     {
         Token = token;
     }
- 
+
     public void ExpressionNode()
     {
         throw new System.NotImplementedException();

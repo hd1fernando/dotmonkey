@@ -43,6 +43,7 @@ public class Parser
         RegisterPrefix(Constants.FALSE, ParserBoolean);
         RegisterPrefix(Constants.LPARENT, ParserGroupedExpressions);
         RegisterPrefix(Constants.IF, ParserIfExpression);
+        RegisterPrefix(Constants.FUNCTION, ParserFunctionLiteral);
 
         RegisterInfix(Constants.PLUS, ParserInfixExpression);
         RegisterInfix(Constants.MINUS, ParserInfixExpression);
@@ -154,6 +155,54 @@ public class Parser
         }
 
         return expression;
+    }
+
+    private IExpression ParserFunctionLiteral()
+    {
+        var literal = new FunctionLiteral(CurrentToken);
+
+        if (ExpectedPeek(Constants.LPARENT) == false)
+            return null;
+
+        var parameters = ParserFunctionParameters();
+        literal.AddParameter(parameters);
+
+        if (ExpectedPeek(Constants.LBRACE) == false)
+            return null;
+
+        literal.Body = ParserBlockStatement();
+
+        return literal;
+    }
+
+    private List<Identifier> ParserFunctionParameters()
+    {
+        var identifiers = new List<Identifier>();
+
+        if (PeekTokenIs(Constants.RPARENT))
+        {
+            NextToken();
+            return identifiers;
+        }
+
+        NextToken();
+
+        var ident = new Identifier(CurrentToken, CurrentToken.Literal);
+        identifiers.Add(ident);
+
+        while (PeekTokenIs(Constants.COMMA))
+        {
+            NextToken();
+            NextToken();
+
+            ident = new Identifier(CurrentToken, CurrentToken.Literal);
+            identifiers.Add(ident);
+        }
+
+        if (ExpectedPeek(Constants.RPARENT) == false)
+            return null;
+
+        return identifiers;
     }
 
     private IExpression ParserPrefixExpression()
