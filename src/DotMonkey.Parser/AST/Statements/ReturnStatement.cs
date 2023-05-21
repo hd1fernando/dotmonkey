@@ -30,10 +30,10 @@ public class ReturnStatement : IStatement
 
         if (ReturnValue is not null)
         {
-            sb.AppendLine(ReturnValue.String());
+            sb.Append(" " + ReturnValue.String());
         }
 
-        sb.AppendLine(";");
+        sb.Append(";");
 
         return sb.ToString();
     }

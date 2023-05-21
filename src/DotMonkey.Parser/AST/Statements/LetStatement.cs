@@ -33,16 +33,16 @@ public class LetStatement : IStatement
     {
         var sb = new StringBuilder();
 
-        sb.AppendLine(TokenLiteral());
-        sb.AppendLine(Name.String());
-        sb.AppendLine("=");
+        sb.Append(TokenLiteral()+" ");
+        sb.Append(Name.String());
+        sb.Append(" = ");
 
         if (Value is not null)
         {
-            sb.AppendLine(Value.String());
+            sb.Append(Value.String());
         }
 
-        sb.AppendLine(";");
+        sb.Append(";");
 
         return sb.ToString();
     }

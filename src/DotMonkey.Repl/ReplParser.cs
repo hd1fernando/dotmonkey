@@ -11,6 +11,7 @@ namespace DotMonkey
         public void Start()
         {
             Console.WriteLine("Press ctrl+c to end cli mode.");
+            Console.WriteLine();
 
             do
             {
@@ -37,6 +38,7 @@ namespace DotMonkey
 
         private void PrintParserErrors(List<string> errors)
         {
+            Console.WriteLine("parser erros:");
             foreach (var error in errors)
                 Console.WriteLine("\t" + error);
         }
