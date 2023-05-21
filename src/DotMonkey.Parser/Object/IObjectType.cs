@@ -13,6 +13,7 @@ public struct ObjectType
     public static implicit operator ObjectType(string value) => new(value);
 
     public const string INTERGER_OBJ = "INTERGER";
+    public const string BOOLEAN_OBJ = "BOOLEAN";
 }
 
 public interface IObject
@@ -21,11 +22,27 @@ public interface IObject
     public string Inspect();
 }
 
+public struct Boolean : IObject
+{
+    public bool Value { get; private set; }
+
+    public Boolean(bool value)
+    {
+        Value = value;
+    }
+
+    public static implicit operator Boolean(bool value) => new(value);
+
+    public string Inspect() => Value.ToString();
+
+    public ObjectType Type() => ObjectType.BOOLEAN_OBJ;
+}
+
 public struct Interger : IObject
 {
     public long Value { get; private set; }
 
-    public Interger(long value)
+    private Interger(long value)
     {
         Value = value;
     }
@@ -34,8 +51,5 @@ public struct Interger : IObject
 
     public string Inspect() => Value.ToString();
 
-    public ObjectType Type()
-    {
-        return ObjectType.INTERGER_OBJ;
-    }
+    public ObjectType Type() => ObjectType.INTERGER_OBJ;
 }
