@@ -1,17 +1,10 @@
-﻿namespace DotMonkey.Parser.Object;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace DotMonkey.Parser.Object;
 
 
 public struct ObjectType
-{
-    public string Value { get; private set; }
-
-    private ObjectType(string value)
-    {
-        Value = value;
-    }
-
-    public static implicit operator ObjectType(string value) => new(value);
-
+{  
     public const string INTERGER_OBJ = "INTERGER";
     public const string BOOLEAN_OBJ = "BOOLEAN";
     public const string NULL_OBJ = "NULL";
@@ -19,7 +12,7 @@ public struct ObjectType
 
 public interface IObject
 {
-    public ObjectType Type();
+    public string Type();
     public string Inspect();
 }
 
@@ -27,7 +20,7 @@ public struct NULL : IObject
 {
     public string Inspect() => "NULL";
 
-    public ObjectType Type() => ObjectType.NULL_OBJ;
+    public string Type() => ObjectType.NULL_OBJ;
 }
 
 public struct _Boolean : IObject
@@ -43,7 +36,17 @@ public struct _Boolean : IObject
 
     public string Inspect() => Value.ToString();
 
-    public ObjectType Type() => ObjectType.BOOLEAN_OBJ;
+    public string Type() => ObjectType.BOOLEAN_OBJ;
+
+    public override bool Equals([NotNullWhen(true)] object obj)
+    {
+        if(obj is not _Boolean)
+            return false;
+
+        var o = (_Boolean)obj;
+
+        return o.Value == Value;
+    }
 }
 
 public struct Integer : IObject
@@ -59,5 +62,5 @@ public struct Integer : IObject
 
     public string Inspect() => Value.ToString();
 
-    public ObjectType Type() => ObjectType.INTERGER_OBJ;
+    public string Type() => ObjectType.INTERGER_OBJ;
 }
