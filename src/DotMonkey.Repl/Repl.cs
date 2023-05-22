@@ -1,4 +1,5 @@
 ﻿using DotMonkey.LexicalAnalizer;
+using DotMonkey.Parser.Eval;
 using Pastel;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Drawing;
 
 namespace DotMonkey;
 
-public class ReplParser : IRepl
+public class Repl : IRepl
 {
     public const string PROMPT = ">>> ";
 
@@ -32,8 +33,13 @@ public class ReplParser : IRepl
                 continue;
             }
 
-            Console.WriteLine(program.String());
-            Console.WriteLine();
+            var evaluated = new Evaluator().Eval(program);
+
+            if (evaluated is not null)
+            {
+                Console.WriteLine(evaluated.Inspect());
+            }
+
 
         } while (true);
     }
