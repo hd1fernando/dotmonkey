@@ -3,17 +3,17 @@ using DotMonkey.Parser.AST;
 using DotMonkey.Parser.Eval;
 using DotMonkey.Parser.Object;
 using FluentAssertions;
-using System;
 using Xunit;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DotMonkey.ParserTest;
 
 public class EvaluatorTest
 {
-    [Theory(DisplayName = "Eval integer objects")]
+    [Theory(DisplayName = "Eval integer expression")]
     [InlineData("5", 5)]
     [InlineData("10", 10)]
+    [InlineData("-5", -5)]
+    [InlineData("-10", -10)]
     public void Test1(string input, int expected)
     {
         var evaluated = TestEval(input);
@@ -31,6 +31,22 @@ public class EvaluatorTest
 
         TestIBooleanObject(evaluated, expected);
     }
+
+    [Theory(DisplayName = "Bang operator ")]
+    [InlineData("!true", false)]
+    [InlineData("!false", true)]
+    [InlineData("!5", false)]
+    [InlineData("!!true", true)]
+    [InlineData("!!false", false)]
+    [InlineData("!!5", true)]
+    public void TestBangOperator(string input, bool expected)
+    {
+        var evaluated = TestEval(input);
+
+        TestIBooleanObject(evaluated, expected);
+    }
+
+
 
     private void TestIBooleanObject(IObject @object, bool expected)
     {
