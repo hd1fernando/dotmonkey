@@ -46,16 +46,16 @@ public struct Boolean : IObject
     public ObjectType Type() => ObjectType.BOOLEAN_OBJ;
 }
 
-public struct Interger : IObject
+public struct Integer : IObject
 {
     public long Value { get; private set; }
 
-    private Interger(long value)
+    public Integer(long value)
     {
         Value = value;
     }
 
-    public static implicit operator Interger(long value) => new(value);
+    public static implicit operator Integer(long value) => new(value);
 
     public string Inspect() => Value.ToString();
 
