@@ -30,16 +30,16 @@ public struct NULL : IObject
     public ObjectType Type() => ObjectType.NULL_OBJ;
 }
 
-public struct Boolean : IObject
+public struct _Boolean : IObject
 {
     public bool Value { get; private set; }
 
-    public Boolean(bool value)
+    public _Boolean(bool value)
     {
         Value = value;
     }
 
-    public static implicit operator Boolean(bool value) => new(value);
+    public static implicit operator _Boolean(bool value) => new(value);
 
     public string Inspect() => Value.ToString();
 
