@@ -35,7 +35,51 @@ public class Evaluator
             return EvalPrefixExpression(prefix.Operator, right);
         }
 
+        if (node is InfixExpression)
+        {
+            var infix = (node as InfixExpression);
+            var left = Eval(infix.Left);
+            var right = Eval(infix.Rigth);
+
+            return EvalInfixExpression(infix.Operator, left, right);
+        }
+
         return null;
+    }
+
+    private IObject EvalInfixExpression(string @operator, IObject left, IObject right)
+    {
+        if (left.Type() == ObjectType.INTERGER_OBJ && right.Type() == ObjectType.INTERGER_OBJ)
+            return EvalIntegerInfixExpression(@operator, left, right);
+
+        var leftVal = ((_Boolean)left).Value;
+        var rightVal = ((_Boolean)right).Value;
+        return @operator switch
+        {
+            "==" => NativeBoolToBooleanObject(leftVal == rightVal),
+            "!=" => NativeBoolToBooleanObject(leftVal != rightVal),
+            _ => NULL
+        };
+
+    }
+
+    private IObject EvalIntegerInfixExpression(string @operator, IObject left, IObject right)
+    {
+        var leftVal = ((Integer)left).Value;
+        var rightVal = ((Integer)right).Value;
+
+        return @operator switch
+        {
+            "+" => new Integer(leftVal + rightVal),
+            "-" => new Integer(leftVal - rightVal),
+            "*" => new Integer(leftVal * rightVal),
+            "/" => new Integer(leftVal / rightVal),
+            "<" => NativeBoolToBooleanObject(leftVal < rightVal),
+            ">" => NativeBoolToBooleanObject(leftVal > rightVal),
+            "==" => NativeBoolToBooleanObject(leftVal == rightVal),
+            "!=" => NativeBoolToBooleanObject(leftVal != rightVal),
+            _ => NULL
+        };
     }
 
     private IObject EvalPrefixExpression(string @operator, IObject right)
