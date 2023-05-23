@@ -97,6 +97,19 @@ public class EvaluatorTest
         }
     }
 
+
+    [Theory(DisplayName = "Return Statement")]
+    [InlineData("return 10;", 10)]
+    [InlineData("return 10; 9;", 10)]
+    [InlineData("return 2 * 5; 9;", 10)]
+    [InlineData("9; return 2 * 5; 9;", 10)]
+    [InlineData("if (10 > 1) { if (10 > 1) { return 10; } return 1; }", 10)]
+    public void TestReturnStatement(string input, int expected)
+    {
+        var evaluated = TestEval(input);
+        TestIntergerObject(evaluated, expected);
+    }
+
     private void TestNullObject(IObject evalueated)
     {
         evalueated.Should().BeOfType<NULL>();
