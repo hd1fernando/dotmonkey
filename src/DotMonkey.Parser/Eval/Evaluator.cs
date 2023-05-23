@@ -17,7 +17,7 @@ public class Evaluator
     public IObject Eval(INode node)
     {
         if (node is Program)
-            return EvalStatements((node as Program).Statements);
+            return EvalProgram((node as Program).Statements);
 
         if (node is ExpressionStatement)
             return Eval((node as ExpressionStatement).Expression);
@@ -45,12 +45,33 @@ public class Evaluator
         }
 
         if (node is BlockStatement)
-            return EvalStatements((node as BlockStatement).Statements);
+            return EvalBlockStatement((node as BlockStatement).Statements);
 
         if (node is IfExpression)
             return EvalIfExpression((node as IfExpression));
 
+        if (node is ReturnStatement)
+        {
+            var val = Eval((node as ReturnStatement).ReturnValue);
+            return new ReturnValue(val);
+        }
+
         return null;
+    }
+
+    private IObject EvalBlockStatement(List<IStatement> statements)
+    {
+        IObject result = null;
+
+        foreach (var statement in statements)
+        {
+            result = Eval(statement);
+
+            if (result is not null && result.Type() == ObjectType.RETURN_VALUE_OBJ)
+                return result;
+        }
+
+        return result;
     }
 
     private IObject EvalIfExpression(IfExpression ifExpression)
@@ -161,13 +182,16 @@ public class Evaluator
         return FALSE;
     }
 
-    private IObject EvalStatements(IList<IStatement> statements)
+    private IObject EvalProgram(IList<IStatement> statements)
     {
         IObject result = null;
 
         foreach (var statement in statements)
         {
             result = Eval(statement);
+
+            if (result is ReturnValue)
+                return ((ReturnValue)result).Value;
         }
 
         return result;
