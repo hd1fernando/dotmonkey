@@ -3,6 +3,7 @@ using DotMonkey.Parser.AST;
 using DotMonkey.Parser.Eval;
 using DotMonkey.Parser.Object;
 using FluentAssertions;
+using System;
 using Xunit;
 
 namespace DotMonkey.ParserTest;
@@ -74,7 +75,32 @@ public class EvaluatorTest
         TestIBooleanObject(evaluated, expected);
     }
 
+    [Theory(DisplayName = "IF ELSE expression")]
+    [InlineData("if (true) { 10 }", 10)]
+    [InlineData("if (false) { 10 }", null)]
+    [InlineData("if (1) { 10 }", 10)]
+    [InlineData("if (1 < 2) { 10 }", 10)]
+    [InlineData("if (1 > 2) { 10 }", null)]
+    [InlineData("if (1 > 2) { 10 } else { 20 }", 20)]
+    [InlineData("if (1 < 2) { 10 } else { 20 }", 10)]
+    public void TestIfElsExpression(string input, object expected)
+    {
+        var evalueated = TestEval(input);
 
+        if (expected is int)
+        {
+            TestIntergerObject(evalueated, (int)expected);
+        }
+        else
+        {
+            TestNullObject(evalueated);
+        }
+    }
+
+    private void TestNullObject(IObject evalueated)
+    {
+        evalueated.Should().BeOfType<NULL>();
+    }
 
     private void TestIBooleanObject(IObject @object, bool expected)
     {
