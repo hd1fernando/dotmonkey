@@ -44,7 +44,43 @@ public class Evaluator
             return EvalInfixExpression(infix.Operator, left, right);
         }
 
+        if (node is BlockStatement)
+            return EvalStatements((node as BlockStatement).Statements);
+
+        if (node is IfExpression)
+            return EvalIfExpression((node as IfExpression));
+
         return null;
+    }
+
+    private IObject EvalIfExpression(IfExpression ifExpression)
+    {
+        var condition = Eval(ifExpression.Condition);
+
+        if (IsTruthy(condition))
+            return Eval(ifExpression.Consequence);
+
+        if (ifExpression.Alternative is not null)
+            return Eval(ifExpression.Alternative);
+
+        return NULL;
+    }
+
+    private bool IsTruthy(IObject condition)
+    {
+        if (condition is NULL)
+            return false;
+
+        if (condition is Integer)
+            return true;
+
+        var c = (_Boolean)condition;
+        if (c.Equals(TRUE))
+            return true;
+        if (c.Equals(FALSE))
+            return false;
+
+        return true;
     }
 
     private IObject EvalInfixExpression(string @operator, IObject left, IObject right)
