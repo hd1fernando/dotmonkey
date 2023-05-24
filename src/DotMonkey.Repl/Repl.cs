@@ -4,6 +4,7 @@ using Pastel;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using Environment = DotMonkey.Parser.Object.Environment;
 
 namespace DotMonkey;
 
@@ -15,6 +16,8 @@ public class Repl : IRepl
     {
         Console.WriteLine("Press ctrl+c to end cli mode.");
         Console.WriteLine();
+
+        var env = new Environment();
 
         do
         {
@@ -33,7 +36,7 @@ public class Repl : IRepl
                 continue;
             }
 
-            var evaluated = new Evaluator().Eval(program);
+            var evaluated = new Evaluator().Eval(program, env);
 
             if (evaluated is not null)
             {

@@ -14,13 +14,13 @@ public class Evaluator
     private static _Boolean FALSE = new _Boolean(false);
     private static NULL NULL = new NULL();
 
-    public IObject Eval(INode node)
+    public IObject Eval(INode node, Object.Environment env)
     {
         if (node is Program)
-            return EvalProgram((node as Program).Statements);
+            return EvalProgram((node as Program).Statements, env);
 
         if (node is ExpressionStatement)
-            return Eval((node as ExpressionStatement).Expression);
+            return Eval((node as ExpressionStatement).Expression, env);
 
         if (node is IntegerLiteral)
             return new Integer((node as IntegerLiteral).Value);
@@ -31,7 +31,7 @@ public class Evaluator
         if (node is PrefixExpression)
         {
             var prefix = (node as PrefixExpression);
-            var right = Eval(prefix.Rigth);
+            var right = Eval(prefix.Rigth, env);
 
             if (IsError(right))
                 return right;
@@ -43,11 +43,11 @@ public class Evaluator
         {
             var infix = (node as InfixExpression);
 
-            var left = Eval(infix.Left);
+            var left = Eval(infix.Left, env);
             if (IsError(left))
                 return left;
 
-            var right = Eval(infix.Rigth);
+            var right = Eval(infix.Rigth, env);
             if (IsError(right))
                 return right;
 
@@ -55,14 +55,14 @@ public class Evaluator
         }
 
         if (node is BlockStatement)
-            return EvalBlockStatement((node as BlockStatement).Statements);
+            return EvalBlockStatement((node as BlockStatement).Statements, env);
 
         if (node is IfExpression)
-            return EvalIfExpression((node as IfExpression));
+            return EvalIfExpression((node as IfExpression), env);
 
         if (node is ReturnStatement)
         {
-            var val = Eval((node as ReturnStatement).ReturnValue);
+            var val = Eval((node as ReturnStatement).ReturnValue, env);
 
             if (IsError(val))
                 return val;
@@ -70,16 +70,40 @@ public class Evaluator
             return new ReturnValue(val);
         }
 
+        if (node is LetStatement)
+        {
+            var let = (node as LetStatement);
+            var val = Eval(let.Value, env);
+
+            if (IsError(val))
+                return val;
+
+            env.Set(let.Name.Value, val);
+        }
+
+        if (node is Identifier)
+            return EvalIdentifier((node as Identifier), env);
+
         return null;
     }
 
-    private IObject EvalBlockStatement(List<IStatement> statements)
+    private IObject EvalIdentifier(Identifier node, Object.Environment env)
+    {
+        var (val, ok) = env.Get(node.Value);
+
+        if (!ok)
+            return NewError("identifier not found: " + node.Value);
+
+        return val;
+    }
+
+    private IObject EvalBlockStatement(List<IStatement> statements, Object.Environment env)
     {
         IObject result = null;
 
         foreach (var statement in statements)
         {
-            result = Eval(statement);
+            result = Eval(statement, env);
             var resultType = result.Type();
             if (result is not null && resultType == ObjectType.RETURN_VALUE_OBJ
                 || resultType == ObjectType.ERROR_OBJ)
@@ -89,18 +113,18 @@ public class Evaluator
         return result;
     }
 
-    private IObject EvalIfExpression(IfExpression ifExpression)
+    private IObject EvalIfExpression(IfExpression ifExpression, Object.Environment env)
     {
-        var condition = Eval(ifExpression.Condition);
+        var condition = Eval(ifExpression.Condition, env);
 
         if (IsError(condition))
             return condition;
 
         if (IsTruthy(condition))
-            return Eval(ifExpression.Consequence);
+            return Eval(ifExpression.Consequence, env);
 
         if (ifExpression.Alternative is not null)
-            return Eval(ifExpression.Alternative);
+            return Eval(ifExpression.Alternative, env);
 
         return NULL;
     }
@@ -203,13 +227,13 @@ public class Evaluator
         return FALSE;
     }
 
-    private IObject EvalProgram(IList<IStatement> statements)
+    private IObject EvalProgram(IList<IStatement> statements, Object.Environment env)
     {
         IObject result = null;
 
         foreach (var statement in statements)
         {
-            result = Eval(statement);
+            result = Eval(statement, env);
 
             if (result is ReturnValue)
                 return ((ReturnValue)result).Value;

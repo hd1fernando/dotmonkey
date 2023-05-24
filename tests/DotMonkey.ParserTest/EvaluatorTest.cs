@@ -5,6 +5,7 @@ using DotMonkey.Parser.Object;
 using FluentAssertions;
 using System;
 using Xunit;
+using Environment = DotMonkey.Parser.Object.Environment;
 
 namespace DotMonkey.ParserTest;
 
@@ -118,6 +119,7 @@ public class EvaluatorTest
     [InlineData("5; true + false; 5", "unknown operator: BOOLEAN + BOOLEAN")]
     [InlineData("if (10 > 1) { true + false; }", "unknown operator: BOOLEAN + BOOLEAN")]
     [InlineData("if (10 > 1) { if (10 > 1) { return true + false; } return 1; }", "unknown operator: BOOLEAN + BOOLEAN")]
+    [InlineData("foobar", "identifier not found: foobar")]
     public void TestErrorHandling(string input, string expected)
     {
         var evaluated = TestEval(input);
@@ -125,6 +127,20 @@ public class EvaluatorTest
         evaluated.Should().BeOfType<Error>();
         ((Error)evaluated).Message.Should().BeEquivalentTo(expected);
     }
+
+    [Theory(DisplayName = "Let Statement")]
+    [InlineData("let a = 5; a;", 5)]
+    [InlineData("let a = 5 * 5; a;", 25)]
+    [InlineData("let a = 5; let b = a; b;", 5)]
+    [InlineData("let a = 5; let b = a; let c = a + b + 5; c;", 15)]
+    public void TestLetStatement(string input, int expected)
+    {
+        var evaluated = TestEval(input);
+
+        TestIntergerObject(evaluated, expected);
+    }
+
+
     private void TestNullObject(IObject evalueated)
     {
         evalueated.Should().BeOfType<NULL>();
@@ -151,7 +167,9 @@ public class EvaluatorTest
 
         Program program = parser.ParserProgram();
 
-        return new Evaluator().Eval(program);
+        var env = new Environment();
+
+        return new Evaluator().Eval(program, env);
     }
 
 }
