@@ -66,8 +66,9 @@ public class Evaluator
         foreach (var statement in statements)
         {
             result = Eval(statement);
-
-            if (result is not null && result.Type() == ObjectType.RETURN_VALUE_OBJ)
+            var resultType = result.Type();
+            if (result is not null && resultType == ObjectType.RETURN_VALUE_OBJ
+                || resultType == ObjectType.ERROR_OBJ)
                 return result;
         }
 
@@ -195,6 +196,8 @@ public class Evaluator
 
             if (result is ReturnValue)
                 return ((ReturnValue)result).Value;
+            if (result is Error)
+                return result;
         }
 
         return result;
@@ -204,5 +207,13 @@ public class Evaluator
     {
         var message = string.Format(format, a);
         return new Error(message);
+    }
+
+    private bool IsError(IObject @object)
+    {
+        if (@object is not null)
+            return @object.Type() == ObjectType.ERROR_OBJ;
+
+        return false;
     }
 }
