@@ -106,6 +106,9 @@ public class Evaluator
 
     private IObject EvalInfixExpression(string @operator, IObject left, IObject right)
     {
+        if (left.Type() != right.Type())
+            return NewError("type mismatch: {0} {1} {2}", left.Type(), @operator, right.Type());
+
         if (left.Type() == ObjectType.INTERGER_OBJ && right.Type() == ObjectType.INTERGER_OBJ)
             return EvalIntegerInfixExpression(@operator, left, right);
 
@@ -115,7 +118,7 @@ public class Evaluator
         {
             "==" => NativeBoolToBooleanObject(leftVal == rightVal),
             "!=" => NativeBoolToBooleanObject(leftVal != rightVal),
-            _ => NULL
+            _ => NewError("unknown operator: {0} {1} {2}", left.Type(), @operator, right.Type()),
         };
 
     }
@@ -135,7 +138,7 @@ public class Evaluator
             ">" => NativeBoolToBooleanObject(leftVal > rightVal),
             "==" => NativeBoolToBooleanObject(leftVal == rightVal),
             "!=" => NativeBoolToBooleanObject(leftVal != rightVal),
-            _ => NULL
+            _ => NewError("unknown operator: {0} {1} {2}", left.Type(), @operator, right.Type()),
         };
     }
 
@@ -145,14 +148,14 @@ public class Evaluator
         {
             "!" => EvalBangOperatorExpression(right),
             "-" => EvalMinuxPrefixOperatorExpression(right),
-            _ => NULL
+            _ => NewError("unknown operator: {0} {1}", @operator, right.Type()),
         };
     }
 
     private IObject EvalMinuxPrefixOperatorExpression(IObject right)
     {
         if (right.Type() != ObjectType.INTERGER_OBJ)
-            return NULL;
+            return NewError("unknown operator: -{0}", right.Type());
 
         var value = ((Integer)right).Value;
 
@@ -195,5 +198,11 @@ public class Evaluator
         }
 
         return result;
+    }
+
+    private Error NewError(string format, params string[] a)
+    {
+        var message = string.Format(format, a);
+        return new Error(message);
     }
 }
