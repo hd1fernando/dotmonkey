@@ -140,6 +140,18 @@ public class EvaluatorTest
         TestIntergerObject(evaluated, expected);
     }
 
+    [Fact(DisplayName = "Function object")]
+    public void TestFunctionObject()
+    {
+        var input = "fn(x){x+2;}";
+        var evaluated = TestEval(input);
+
+        evaluated.Should().BeOfType<Function>();
+        var function = ((Function)evaluated);
+        function.Parameters.Should().HaveCount(1);
+        function.Parameters[0].String().Should().BeEquivalentTo("x");
+        function.Body.String().Should().BeEquivalentTo("(x+2)");
+    }
 
     private void TestNullObject(IObject evalueated)
     {
