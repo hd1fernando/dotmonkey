@@ -110,6 +110,21 @@ public class EvaluatorTest
         TestIntergerObject(evaluated, expected);
     }
 
+    [Theory(DisplayName = "Error Handling")]
+    [InlineData("5 + true;", "type mismatch: INTEGER + BOOLEAN")]
+    [InlineData("5 + true; 5;", "type mismatch: INTEGER + BOOLEAN")]
+    [InlineData("-true", "unknown operator: -BOOLEAN")]
+    [InlineData("true + false;", "unknown operator: BOOLEAN + BOOLEAN")]
+    [InlineData("5; true + false; 5", "unknown operator: BOOLEAN + BOOLEAN")]
+    [InlineData("if (10 > 1) { true + false; }", "unknown operator: BOOLEAN + BOOLEAN")]
+    [InlineData("if (10 > 1) { if (10 > 1) { return true + false; } return 1; }", "unknown operator: BOOLEAN + BOOLEAN")]
+    public void TestErrorHandling(string input, string expected)
+    {
+        var evaluated = TestEval(input);
+
+        evaluated.Should().BeOfType<Error>();
+        ((Error)evaluated).Message.Should().BeEquivalentTo(expected);
+    }
     private void TestNullObject(IObject evalueated)
     {
         evalueated.Should().BeOfType<NULL>();
