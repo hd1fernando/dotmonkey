@@ -84,6 +84,16 @@ public class Evaluator
         if (node is Identifier)
             return EvalIdentifier((node as Identifier), env);
 
+        if (node is FunctionLiteral)
+        {
+            var func = (node as FunctionLiteral);
+            var @params = func.Parameters;
+            var body = func.Body;
+
+            return new Function(@params, body, env);
+
+        }
+
         return null;
     }
 
