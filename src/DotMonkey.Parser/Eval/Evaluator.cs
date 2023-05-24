@@ -32,14 +32,24 @@ public class Evaluator
         {
             var prefix = (node as PrefixExpression);
             var right = Eval(prefix.Rigth);
+
+            if (IsError(right))
+                return right;
+
             return EvalPrefixExpression(prefix.Operator, right);
         }
 
         if (node is InfixExpression)
         {
             var infix = (node as InfixExpression);
+
             var left = Eval(infix.Left);
+            if (IsError(left))
+                return left;
+
             var right = Eval(infix.Rigth);
+            if (IsError(right))
+                return right;
 
             return EvalInfixExpression(infix.Operator, left, right);
         }
@@ -53,6 +63,10 @@ public class Evaluator
         if (node is ReturnStatement)
         {
             var val = Eval((node as ReturnStatement).ReturnValue);
+
+            if (IsError(val))
+                return val;
+
             return new ReturnValue(val);
         }
 
@@ -78,6 +92,9 @@ public class Evaluator
     private IObject EvalIfExpression(IfExpression ifExpression)
     {
         var condition = Eval(ifExpression.Condition);
+
+        if (IsError(condition))
+            return condition;
 
         if (IsTruthy(condition))
             return Eval(ifExpression.Consequence);
