@@ -153,6 +153,19 @@ public class EvaluatorTest
         function.Body.String().Should().BeEquivalentTo("(x+2)");
     }
 
+    [Theory(DisplayName = "Function Application")]
+    [InlineData("let identity = fn(x) { x; }; identity(5);", 5)]
+    [InlineData("let identity = fn(x) { return x; }; identity(5);", 5)]
+    [InlineData("let double = fn(x) { x * 2; }; double(5);", 10)]
+    [InlineData("let add = fn(x, y) { x + y; }; add(5, 5);", 10)]
+    [InlineData("let add = fn(x, y) { x + y; }; add(5 + 5, add(5, 5));", 20)]
+    [InlineData("fn(x) { x; }(5)", 5)]
+    public void TestFunctionApplication(string input, int expected)
+    {
+        var evaluated = TestEval(input);
+        TestIntergerObject(evaluated, expected);
+    }
+
     private void TestNullObject(IObject evalueated)
     {
         evalueated.Should().BeOfType<NULL>();

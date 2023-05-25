@@ -91,10 +91,68 @@ public class Evaluator
             var body = func.Body;
 
             return new Function(@params, body, env);
+        }
 
+        if (node is CallExpression)
+        {
+            var function = Eval((node as CallExpression).Function, env);
+
+            if (IsError(function))
+                return function;
+
+            var args = EvalExpressions((node as CallExpression).Arguments, env);
+
+            if (args.Count == 1 && IsError(args[0]))
+                return args[0];
+
+            return ApplyFunction(function, args);
         }
 
         return null;
+    }
+
+    private IObject ApplyFunction(IObject fn, List<IObject> args)
+    {
+        if ((fn is Function) == false)
+            return NewError($"not a function: {0}", fn.Type());
+
+        var function = (Function)fn;
+        var extendedEnv = ExtendedFunctionEnv(function, args);
+        var evaluated = Eval(function.Body, extendedEnv);
+
+        return UnwrapReturnValue(evaluated);
+    }
+
+    private IObject UnwrapReturnValue(IObject obj)
+    {
+        if (obj is ReturnValue)
+            return ((ReturnValue)obj).Value;
+        return obj;
+    }
+
+    private Object.Environment ExtendedFunctionEnv(Function fn, List<IObject> args)
+    {
+        var env = Object.Environment.NewEnclosedEnvironment(fn.Environment);
+
+        for (int i = 0; i < fn.Parameters.Count; i++)
+            env.Set(fn.Parameters[i].Value, args[i]);
+
+        return env;
+    }
+
+    private List<IObject> EvalExpressions(List<IExpression> expressions, Object.Environment env)
+    {
+        var result = new List<IObject>();
+
+        foreach (var expression in expressions)
+        {
+            var evaluated = Eval(expression, env);
+            if (IsError(evaluated))
+                return new List<IObject> { evaluated };
+
+            result.Add(evaluated);
+        }
+        return result;
     }
 
     private IObject EvalIdentifier(Identifier node, Object.Environment env)

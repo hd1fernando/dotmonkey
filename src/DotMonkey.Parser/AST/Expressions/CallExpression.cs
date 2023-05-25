@@ -7,7 +7,6 @@ namespace DotMonkey.Parser.AST.Expressions;
 
 public class CallExpression : IExpression
 {
-
     public Token Token { get; init; }
     public IExpression Function { get; init; }
     public List<IExpression> Arguments { get; private set; } = new List<IExpression>();
