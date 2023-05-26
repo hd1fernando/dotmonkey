@@ -166,6 +166,18 @@ public class EvaluatorTest
         TestIntergerObject(evaluated, expected);
     }
 
+    [Theory(DisplayName = "Test Closure")]
+    [InlineData(
+        "let newAdder = fn(x) { " +
+                "fn(y) { x + y }; " +
+              "}; " +
+            "let addTwo = newAdder(2);" +
+            " addTwo(2);", 4)]
+    public void TestClosures(string input, int expected)
+    {
+        var evaluated = TestEval(input);
+        TestIntergerObject(evaluated, expected);
+    }
     private void TestNullObject(IObject evalueated)
     {
         evalueated.Should().BeOfType<NULL>();
