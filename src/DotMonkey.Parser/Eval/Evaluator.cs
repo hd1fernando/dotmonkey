@@ -172,9 +172,8 @@ public class Evaluator
         foreach (var statement in statements)
         {
             result = Eval(statement, env);
-            var resultType = result.Type();
-            if (result is not null && resultType == ObjectType.RETURN_VALUE_OBJ
-                || resultType == ObjectType.ERROR_OBJ)
+            if (result is not null && result.Type() == ObjectType.RETURN_VALUE_OBJ
+                || result is not null && result.Type() == ObjectType.ERROR_OBJ)
                 return result;
         }
 
