@@ -178,6 +178,20 @@ public class EvaluatorTest
         var evaluated = TestEval(input);
         TestIntergerObject(evaluated, expected);
     }
+
+
+    [Fact(DisplayName = "String Literal")]
+    public void TestStringLiteral()
+    {
+        var input = "\"Hello world!\"";
+
+        var evaluated = TestEval(input);
+
+        evaluated.Should().BeOfType<_String>();
+        ((_String)evaluated).Value.Should().BeEquivalentTo(input.Replace("\"", ""));
+    }
+
+
     private void TestNullObject(IObject evalueated)
     {
         evalueated.Should().BeOfType<NULL>();

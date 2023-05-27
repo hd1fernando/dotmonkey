@@ -41,6 +41,8 @@ public class LexerTest
     [InlineData("\t", Constants.EOF)]
     [InlineData("\n", Constants.EOF)]
     [InlineData("^", Constants.ILLEGAL)]
+    [InlineData("\"foobar\"", Constants.STRING)]
+    [InlineData("\"foo bar\"", Constants.STRING)]
     [Trait("Lexical Analizer", nameof(Lexer))]
     public void test1(string input, string expectedToken)
     {
@@ -74,7 +76,10 @@ public class LexerTest
              "  return false; " +
              "}" +
              "10 == 10;" +
-             "10 != 9;",
+             "10 != 9;" +
+             "\"foobar\""+
+             "\"foo bar\""
+           ,
             new[]
             {
                 Constants.LET, Constants.IDENT, Constants.ASSING, Constants.INT, Constants.SEMICOLON,
@@ -92,10 +97,13 @@ public class LexerTest
                 Constants.RBRACE,
                 Constants.INT, Constants.EQ, Constants.INT, Constants.SEMICOLON,
                 Constants.INT, Constants.NOT_EQ,Constants.INT, Constants.SEMICOLON,
-                Constants.EOF
+                Constants.STRING,
+                Constants.STRING,
+
+                Constants.EOF,
             })]
     [Trait("Lexical Analizer", nameof(Lexer))]
-    public void test2(string input, string[] expectedTokens)
+    public void TestNextToken(string input, string[] expectedTokens)
     {
         var lexer = new Lexer(input);
 
