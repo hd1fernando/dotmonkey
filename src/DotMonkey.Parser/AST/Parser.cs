@@ -45,6 +45,7 @@ public class Parser
         RegisterPrefix(Constants.LPARENT, ParserGroupedExpressions);
         RegisterPrefix(Constants.IF, ParserIfExpression);
         RegisterPrefix(Constants.FUNCTION, ParserFunctionLiteral);
+        RegisterPrefix(Constants.STRING, () => new StringLiteral(CurrentToken, CurrentToken.Literal));
 
         RegisterInfix(Constants.PLUS, ParserInfixExpression);
         RegisterInfix(Constants.MINUS, ParserInfixExpression);

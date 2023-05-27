@@ -108,6 +108,9 @@ public class Evaluator
             return ApplyFunction(function, args);
         }
 
+        if (node is StringLiteral)
+            return new _String((node as StringLiteral).Value);
+
         return null;
     }
 

@@ -42,6 +42,7 @@ public class Lexer
             '<' => new Token(Constants.LT, _charUnderExamination.ToString()),
             '>' => new Token(Constants.GT, _charUnderExamination.ToString()),
             '\0' => new Token(Constants.EOF, _charUnderExamination.ToString()),
+            '"' => new Token(Constants.STRING, ReadString()),
             _ => DefautlPattern(token)
         };
 
@@ -87,6 +88,19 @@ public class Lexer
             }
             return new Token(Constants.BANG, _charUnderExamination.ToString());
         }
+    }
+
+    private string ReadString()
+    {
+        var position = _currentPositionInInput + 1;
+
+        do
+        {
+            ReadChar();
+        }
+        while (_charUnderExamination != '"' && _charUnderExamination != 0);
+
+        return _input[position.._currentPositionInInput];
     }
 
     private void ReadChar()

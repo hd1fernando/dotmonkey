@@ -41,5 +41,7 @@
         public const string IF = nameof(IF);
         public const string ELSE = nameof(ELSE);
         public const string RETURN = nameof(RETURN);
+
+        public const string STRING = "STRING";  
     }
 }
