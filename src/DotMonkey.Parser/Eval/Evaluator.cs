@@ -224,6 +224,9 @@ public class Evaluator
         if (left.Type() == ObjectType.INTERGER_OBJ && right.Type() == ObjectType.INTERGER_OBJ)
             return EvalIntegerInfixExpression(@operator, left, right);
 
+        if (left.Type() == ObjectType.STRING_OBJ && right.Type() == ObjectType.STRING_OBJ)
+            return EvalStringInfixExpression(@operator, left, right);
+
         var leftVal = ((_Boolean)left).Value;
         var rightVal = ((_Boolean)right).Value;
         return @operator switch
@@ -233,6 +236,17 @@ public class Evaluator
             _ => NewError("unknown operator: {0} {1} {2}", left.Type(), @operator, right.Type()),
         };
 
+    }
+
+    private IObject EvalStringInfixExpression(string @operator, IObject left, IObject right)
+    {
+        if (@operator != "+")
+            return NewError("unknown operator: {0} {1} {2}", left.Type(), @operator, right.Type());
+
+        var leftVal = ((_String)left).Value;
+        var rightVal = ((_String)right).Value;
+
+        return new _String(leftVal + rightVal);
     }
 
     private IObject EvalIntegerInfixExpression(string @operator, IObject left, IObject right)
