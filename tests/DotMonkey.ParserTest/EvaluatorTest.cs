@@ -120,6 +120,7 @@ public class EvaluatorTest
     [InlineData("if (10 > 1) { true + false; }", "unknown operator: BOOLEAN + BOOLEAN")]
     [InlineData("if (10 > 1) { if (10 > 1) { return true + false; } return 1; }", "unknown operator: BOOLEAN + BOOLEAN")]
     [InlineData("foobar", "identifier not found: foobar")]
+    [InlineData("\"Hello\"-\"World\"", "unknown operator: STRING - STRING")]
     public void TestErrorHandling(string input, string expected)
     {
         var evaluated = TestEval(input);
@@ -189,6 +190,17 @@ public class EvaluatorTest
 
         evaluated.Should().BeOfType<_String>();
         ((_String)evaluated).Value.Should().BeEquivalentTo(input.Replace("\"", ""));
+    }
+
+    [Fact(DisplayName = "String Concatenation")]
+    public void TestStringConcatenation()
+    {
+        var input = "\"Hello\"+\" \"+\"world!\"";
+
+        var evaluated = TestEval(input);
+
+        evaluated.Should().BeOfType<_String>();
+        ((_String)evaluated).Value.Should().BeEquivalentTo("Hello world!");
     }
 
 
