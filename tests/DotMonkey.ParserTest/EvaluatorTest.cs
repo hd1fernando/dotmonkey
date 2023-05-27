@@ -203,6 +203,25 @@ public class EvaluatorTest
         ((_String)evaluated).Value.Should().BeEquivalentTo("Hello world!");
     }
 
+    [Theory(DisplayName = "Built-in fuctions")]
+    [InlineData("len(\"\")", 0)]
+    [InlineData("len(\"four\")", 4)]
+    [InlineData("len(\"hello world\")", 11)]
+    [InlineData("len(1)", "argument to `len` not supported, got INTEGER")]
+    [InlineData("len(\"one\", \"two\")", "wrong number of arguments. got=2, want=1")]
+    public void TestBuiltinFunctions(string input, object expected)
+    {
+        var evaluated = TestEval(input);
+
+        if (expected.GetType() == typeof(int))
+            TestIntergerObject(evaluated, (int)expected);
+
+        if (expected.GetType() == typeof(string))
+        {
+            evaluated.Should().BeOfType<Error>();
+            ((Error)evaluated).Message.Should().BeEquivalentTo(expected.ToString());
+        }
+    }
 
     private void TestNullObject(IObject evalueated)
     {
