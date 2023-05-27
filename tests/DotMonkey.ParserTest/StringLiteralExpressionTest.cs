@@ -21,7 +21,7 @@ public class StringLiteralExpressionTest
         statement.Should().BeOfType<ExpressionStatement>();
         var stringLiteral = (statement as ExpressionStatement).Expression;
         stringLiteral.Should().BeOfType<StringLiteral>();
-        (stringLiteral as StringLiteral).Value.Should().BeEquivalentTo(input.Replace("\"",""));
+        (stringLiteral as StringLiteral).Value.Should().BeEquivalentTo(input.Replace("\"", ""));
     }
 }
 

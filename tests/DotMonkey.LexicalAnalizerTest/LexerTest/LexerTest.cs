@@ -26,6 +26,8 @@ public class LexerTest
     [InlineData(")", Constants.RPARENT)]
     [InlineData("{", Constants.LBRACE)]
     [InlineData("}", Constants.RBRACE)]
+    [InlineData("[", Constants.LBRACKET)]
+    [InlineData("]", Constants.RBRACKET)]
     [InlineData("-", Constants.MINUS)]
     [InlineData("!", Constants.BANG)]
     [InlineData("*", Constants.ASTERISK)]
@@ -77,8 +79,9 @@ public class LexerTest
              "}" +
              "10 == 10;" +
              "10 != 9;" +
-             "\"foobar\""+
-             "\"foo bar\""
+             "\"foobar\"" +
+             "\"foo bar\"" +
+             "[1,2];"
            ,
             new[]
             {
@@ -99,6 +102,7 @@ public class LexerTest
                 Constants.INT, Constants.NOT_EQ,Constants.INT, Constants.SEMICOLON,
                 Constants.STRING,
                 Constants.STRING,
+                Constants.LBRACKET, Constants.INT, Constants.COMMA, Constants.INT, Constants.RBRACKET, Constants.SEMICOLON,
 
                 Constants.EOF,
             })]
