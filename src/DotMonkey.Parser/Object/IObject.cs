@@ -1,4 +1,6 @@
-﻿namespace DotMonkey.Parser.Object;
+﻿using System.Collections.Generic;
+
+namespace DotMonkey.Parser.Object;
 
 
 public struct ObjectType
@@ -10,6 +12,10 @@ public struct ObjectType
     public const string ERROR_OBJ = "ERROR";
     public const string FUNCTION_OBJ = "FUNCTION";
     public const string STRING_OBJ = "STRING";
+    public const string BUILTIN_OBJ = "BUILTIN";
+
+    public delegate IObject BuiltInFunction(List<IObject> args);
+
 }
 
 public interface IObject

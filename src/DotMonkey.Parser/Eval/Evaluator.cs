@@ -14,6 +14,23 @@ public class Evaluator
     private static _Boolean FALSE = new _Boolean(false);
     private static NULL NULL = new NULL();
 
+    private Dictionary<string, BuiltIn> _builtins = new Dictionary<string, BuiltIn>();
+
+    public Evaluator()
+    {
+        _builtins.Add(
+            "len", new BuiltIn((_) =>
+            {
+                if (_.Count != 1)
+                    return NewError("wrong number of arguments. got={0}, want=1", _.Count.ToString());
+
+                var arg = _[0];
+                if (arg is _String)
+                    return new Integer((long)((_String)arg).Value.Length);
+                return NewError("argument to `len` not supported, got {0}", arg.Type());
+            }));
+    }
+
     public IObject Eval(INode node, Object.Environment env)
     {
         if (node is Program)
@@ -116,14 +133,19 @@ public class Evaluator
 
     private IObject ApplyFunction(IObject fn, List<IObject> args)
     {
-        if ((fn is Function) == false)
-            return NewError($"not a function: {0}", fn.Type());
+        if (fn is Function)
+        {
+            var func = (Function)fn;
+            var extendendEnv = ExtendedFunctionEnv(func, args);
+            var evaluated = Eval(func.Body, extendendEnv);
+            return UnwrapReturnValue(evaluated);
+        }
+        if (fn is BuiltIn)
+        {
+            return ((BuiltIn)fn).Fn(args);
+        }
 
-        var function = (Function)fn;
-        var extendedEnv = ExtendedFunctionEnv(function, args);
-        var evaluated = Eval(function.Body, extendedEnv);
-
-        return UnwrapReturnValue(evaluated);
+        return NewError("not a function {0}", fn.Type());
     }
 
     private IObject UnwrapReturnValue(IObject obj)
@@ -162,10 +184,14 @@ public class Evaluator
     {
         var (val, ok) = env.Get(node.Value);
 
-        if (!ok)
-            return NewError("identifier not found: " + node.Value);
+        if (ok)
+            return val;
 
-        return val;
+        if (_builtins.TryGetValue(node.Value, out var builtin))
+            return builtin;
+
+        return NewError("identifier not found: " + node.Value);
+
     }
 
     private IObject EvalBlockStatement(List<IStatement> statements, Object.Environment env)
