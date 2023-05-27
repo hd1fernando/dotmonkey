@@ -32,6 +32,9 @@
         public const string RPARENT = ")";
         public const string LBRACE = "{";
         public const string RBRACE = "}";
+        public const string LBRACKET = "[";
+        public const string RBRACKET = "]";
+
 
         // Keywords
         public const string FUNCTION = nameof(FUNCTION);
@@ -42,6 +45,6 @@
         public const string ELSE = nameof(ELSE);
         public const string RETURN = nameof(RETURN);
 
-        public const string STRING = "STRING";  
+        public const string STRING = "STRING";
     }
 }

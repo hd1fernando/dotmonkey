@@ -2,8 +2,10 @@
 using DotMonkey.Parser.AST.Expressions;
 using DotMonkey.Parser.AST.Interfaces;
 using DotMonkey.Parser.AST.Statements;
+using DotMonkey.Parser.Object;
 using System;
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
 
 namespace DotMonkey.Parser.AST;
 
@@ -46,6 +48,7 @@ public class Parser
         RegisterPrefix(Constants.IF, ParserIfExpression);
         RegisterPrefix(Constants.FUNCTION, ParserFunctionLiteral);
         RegisterPrefix(Constants.STRING, () => new StringLiteral(CurrentToken, CurrentToken.Literal));
+        RegisterPrefix(Constants.LBRACKET, ParserArrayLiteral);
 
         RegisterInfix(Constants.PLUS, ParserInfixExpression);
         RegisterInfix(Constants.MINUS, ParserInfixExpression);
@@ -178,6 +181,38 @@ public class Parser
         return literal;
     }
 
+    private IExpression ParserArrayLiteral()
+    {
+        return new ArrayLiteral(CurrentToken, ParserExpressionList(Constants.RBRACKET));
+    }
+
+    private List<IExpression> ParserExpressionList(string end)
+    {
+        var list = new List<IExpression>();
+
+        if (PeekTokenIs(end))
+        {
+            NextToken();
+            return list;
+        }
+
+        NextToken();
+        list.Add(ParserExpression(Precedences.LOWEST));
+
+        while (PeekTokenIs(Constants.COMMA))
+        {
+            NextToken();
+            NextToken();
+
+            list.Add(ParserExpression(Precedences.LOWEST));
+        }
+
+        if (ExpectedPeek(end) == false)
+            return null;
+
+        return list;
+    }
+
     private List<Identifier> ParserFunctionParameters()
     {
         var identifiers = new List<Identifier>();
@@ -233,37 +268,9 @@ public class Parser
 
     private IExpression ParserCallExpression(IExpression function)
     {
-        var callExpression = new CallExpression(CurrentToken, function, ParserCallArguments());
+        var callExpression = new CallExpression(CurrentToken, function, ParserExpressionList(Constants.RPARENT));
 
         return callExpression;
-    }
-
-    private List<IExpression> ParserCallArguments()
-    {
-        var args = new List<IExpression>();
-
-        if (PeekTokenIs(Constants.RPARENT))
-        {
-            NextToken();
-            return args;
-        }
-
-        NextToken();
-
-        args.Add(ParserExpression(Precedences.LOWEST));
-
-        while (PeekTokenIs(Constants.COMMA))
-        {
-            NextToken();
-            NextToken();
-
-            args.Add(ParserExpression(Precedences.LOWEST));
-        }
-
-        if (ExpectedPeek(Constants.RPARENT) == false)
-            return null;
-
-        return args;
     }
 
     private IStatement ParserStatement()
