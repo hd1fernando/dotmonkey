@@ -128,7 +128,48 @@ public class Evaluator
         if (node is StringLiteral)
             return new _String((node as StringLiteral).Value);
 
+        if (node is ArrayLiteral)
+        {
+            var elements = EvalExpressions((node as ArrayLiteral).Elements, env);
+            if (elements.Count == 1 && IsError(elements[0]))
+                return elements[0];
+            return new _Array(elements);
+        }
+
+        if (node is IndexExpression)
+        {
+            var indexNode = (node as IndexExpression);
+            var left = Eval(indexNode.Left, env);
+
+            if (IsError(left))
+                return left;
+
+            var index = Eval(indexNode.Index, env);
+            if (IsError(index))
+                return index;
+
+            return EvalIndexExpression(left, index);
+        }
+
         return null;
+    }
+
+    private IObject EvalIndexExpression(IObject left, IObject index)
+    {
+        if (left.Type() == ObjectType.ARRAY_OBJ && index.Type() == ObjectType.INTERGER_OBJ)
+            return EvalArrayIndexExpression(left, index);
+        return NewError("index operator not supported: {0}", left.Type());
+    }
+
+    private IObject EvalArrayIndexExpression(IObject array, IObject index)
+    {
+        var arrayObject = (_Array)array;
+        var idx = (int)((Integer)index).Value;
+        var max = arrayObject.Elements.Count - 1;
+
+        if (idx < 0 || idx > max)
+            return NULL;
+        return arrayObject.Elements[idx];
     }
 
     private IObject ApplyFunction(IObject fn, List<IObject> args)

@@ -13,6 +13,7 @@ public struct ObjectType
     public const string FUNCTION_OBJ = "FUNCTION";
     public const string STRING_OBJ = "STRING";
     public const string BUILTIN_OBJ = "BUILTIN";
+    public const string ARRAY_OBJ = "ARRAY";
 
     public delegate IObject BuiltInFunction(List<IObject> args);
 

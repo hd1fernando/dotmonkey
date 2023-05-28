@@ -25,11 +25,12 @@ public class Parser
         {Constants.SLASH, Precedences.PRODUCT },
         {Constants.ASTERISK, Precedences.PRODUCT },
         {Constants.LPARENT, Precedences.CALL },
+        {Constants.LBRACKET,Precedences.INDEX },
     };
 
     private Lexer _lexer { get; init; }
-    public Token CurrentToken { get; private set; }
-    public Token PeekToken { get; private set; }
+    private Token CurrentToken { get; set; }
+    private Token PeekToken { get; set; }
     public List<string> Errors { get; private set; } = new List<string>();
 
 
@@ -59,6 +60,7 @@ public class Parser
         RegisterInfix(Constants.LT, ParserInfixExpression);
         RegisterInfix(Constants.GT, ParserInfixExpression);
         RegisterInfix(Constants.LPARENT, ParserCallExpression);
+        RegisterInfix(Constants.LBRACKET, ParserIndexExpression);
 
         // Read two tokens, so CurrentToken and PeekToken are both set.
         NextToken();
@@ -273,6 +275,17 @@ public class Parser
         return callExpression;
     }
 
+    private IExpression ParserIndexExpression(IExpression left)
+    {
+        var exp = new IndexExpression(CurrentToken, left);
+        NextToken();
+        exp.Index = ParserExpression(Precedences.LOWEST);
+
+        if (ExpectedPeek(Constants.RBRACKET) == false)
+            return null;
+        return exp;
+    }
+
     private IStatement ParserStatement()
     {
         return CurrentToken.Type switch
@@ -458,4 +471,5 @@ public enum Precedences
     PRODUCT, // *
     PREFIX, // -x or !x
     CALL, // myFunction(x)
+    INDEX
 }
