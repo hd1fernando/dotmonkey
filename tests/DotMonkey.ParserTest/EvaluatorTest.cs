@@ -4,6 +4,7 @@ using DotMonkey.Parser.Eval;
 using DotMonkey.Parser.Object;
 using FluentAssertions;
 using System;
+using System.Reflection.Metadata;
 using Xunit;
 using Environment = DotMonkey.Parser.Object.Environment;
 
@@ -222,6 +223,49 @@ public class EvaluatorTest
             ((Error)evaluated).Message.Should().BeEquivalentTo(expected.ToString());
         }
     }
+
+
+
+    [Fact(DisplayName = "Array literal")]
+    public void TestArrayLiterals()
+    {
+        var input = "[1, 2 * 2, 3 + 3]";
+
+        var evaluated = TestEval(input);
+
+        evaluated.Should().BeOfType<_Array>();
+        var result = (_Array)evaluated;
+        result.Elements.Should().HaveCount(3);
+        TestIntergerObject(result.Elements[0], 1);
+        TestIntergerObject(result.Elements[1], 4);
+        TestIntergerObject(result.Elements[2], 6);
+    }
+
+    [Theory(DisplayName = "Array index expressions")]
+    [InlineData("[1, 2, 3][0]", 1)]
+    [InlineData("[1, 2, 3][1]", 2)]
+    [InlineData("[1, 2, 3][2]", 3)]
+    [InlineData("let i = 0; [1][i];", 1)]
+    [InlineData("[1, 2, 3][1 + 1];", 3)]
+    [InlineData("let myArray = [1, 2, 3]; myArray[2];", 3)]
+    [InlineData("let myArray = [1, 2, 3]; myArray[0] + myArray[1] + myArray[2];", 6)]
+    [InlineData("let myArray = [1, 2, 3]; let i = myArray[0]; myArray[i]", 2)]
+    [InlineData("[1, 2, 3][3]", null)]
+    [InlineData("[1, 2, 3][-1]", null)]
+    public void TestArrayIndexExpressions(string input, object expected)
+    {
+        var evaluated = TestEval(input);
+
+        if (expected is not null && expected.GetType() == typeof(int))
+        {
+            TestIntergerObject(evaluated, (int)expected);
+        }
+        else
+        {
+            TestNullObject(evaluated);
+        }
+    }
+
 
     private void TestNullObject(IObject evalueated)
     {
