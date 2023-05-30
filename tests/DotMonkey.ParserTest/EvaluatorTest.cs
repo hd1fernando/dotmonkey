@@ -4,6 +4,7 @@ using DotMonkey.Parser.Eval;
 using DotMonkey.Parser.Object;
 using FluentAssertions;
 using System;
+using System.Collections.Generic;
 using System.Reflection.Metadata;
 using Xunit;
 using Environment = DotMonkey.Parser.Object.Environment;
@@ -208,8 +209,30 @@ public class EvaluatorTest
     [InlineData("len(\"\")", 0)]
     [InlineData("len(\"four\")", 4)]
     [InlineData("len(\"hello world\")", 11)]
+    [InlineData("len([1])", 1)]
+    [InlineData("len([1, 2])", 2)]
+    [InlineData("len([])", 0)]
     [InlineData("len(1)", "argument to `len` not supported, got INTEGER")]
     [InlineData("len(\"one\", \"two\")", "wrong number of arguments. got=2, want=1")]
+    [InlineData("first([])", "array can't be empty")]
+    [InlineData("first([,])", "array can't be empty")]
+    [InlineData("first([1])", 1)]
+    [InlineData("first([2, 1])", 2)]
+    [InlineData("first([1], [2])", "wrong number of arguments. got=2, want=1")]
+    [InlineData("first()", "wrong number of arguments. got=0, want=1")]
+    [InlineData("first(1)", "argument to `first` not supported, got INTEGER")]
+    [InlineData("last(1)", "argument to `last` not supported, got INTEGER")]
+    [InlineData("last()", "wrong number of arguments. got=0, want=1")]
+    [InlineData("last([])", "array can't be empty")]
+    [InlineData("last([,])", "array can't be empty")]
+    [InlineData("last([1])", 1)]
+    [InlineData("last([2, 1])", 1)]
+    [InlineData("last([2, 1, 0])", 0)]
+    [InlineData("last([1], [2])", "wrong number of arguments. got=2, want=1")]
+
+    [InlineData("rest(1)", "argument to `rest` must be ARRAY, got INTEGER")]
+    [InlineData("rest()", "wrong number of arguments. got=0, want=1")]
+    [InlineData("rest([1], [2])", "wrong number of arguments. got=2, want=1")]
     public void TestBuiltinFunctions(string input, object expected)
     {
         var evaluated = TestEval(input);
@@ -217,14 +240,17 @@ public class EvaluatorTest
         if (expected.GetType() == typeof(int))
             TestIntergerObject(evaluated, (int)expected);
 
-        if (expected.GetType() == typeof(string))
+        else if (expected.GetType() == typeof(string))
         {
             evaluated.Should().BeOfType<Error>();
             ((Error)evaluated).Message.Should().BeEquivalentTo(expected.ToString());
         }
+        else
+        {
+            throw new NotSupportedException("Not expected test value");
+        }
+
     }
-
-
 
     [Fact(DisplayName = "Array literal")]
     public void TestArrayLiterals()
