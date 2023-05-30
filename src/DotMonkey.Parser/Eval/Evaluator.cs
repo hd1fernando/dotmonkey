@@ -5,6 +5,7 @@ using DotMonkey.Parser.AST.Statements;
 using DotMonkey.Parser.Object;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DotMonkey.Parser.Eval;
 
@@ -27,8 +28,79 @@ public class Evaluator
                 var arg = _[0];
                 if (arg is _String)
                     return new Integer((long)((_String)arg).Value.Length);
+                if (arg is _Array)
+                    return new Integer((long)((_Array)arg).Elements.Count);
+
                 return NewError("argument to `len` not supported, got {0}", arg.Type());
             }));
+        _builtins.Add("first", new((_) =>
+        {
+            if (_.Count != 1)
+                return NewError("wrong number of arguments. got={0}, want=1", _.Count.ToString());
+
+            var arg = _[0];
+
+            if (arg is _Array)
+            {
+                if (((_Array)arg).Elements.Count < 1 || ((_Array)arg).Elements[0] == null)
+                    return NewError("array can't be empty");
+                return ((_Array)arg).Elements[0];
+            }
+
+            return NewError("argument to `first` not supported, got {0}", arg.Type());
+
+        }));
+        _builtins.Add("last", new((_) =>
+        {
+            if (_.Count != 1)
+                return NewError("wrong number of arguments. got={0}, want=1", _.Count.ToString());
+
+            var arg = _[0];
+
+            if (arg is _Array)
+            {
+                if (((_Array)arg).Elements.Count < 1 || ((_Array)arg).Elements[0] == null)
+                    return NewError("array can't be empty");
+                return ((_Array)arg).Elements.Last();
+            }
+
+            return NewError("argument to `last` not supported, got {0}", arg.Type());
+
+        }));
+        _builtins.Add("rest", new((_) =>
+        {
+            if (_.Count != 1)
+                return NewError("wrong number of arguments. got={0}, want=1", _.Count.ToString());
+
+            var arg = _[0];
+
+            if (arg.Type() != ObjectType.ARRAY_OBJ)
+            {
+                return NewError("argument to `rest` must be ARRAY, got {0}", arg.Type());
+            }
+
+            var element = new List<IObject>(((_Array)arg).Elements.Skip(1));
+
+            return new _Array(element);
+        }));
+        _builtins.Add("push", new((_) =>
+        {
+            if (_.Count != 2)
+                return NewError("wrong number of arguments. got={0}, want=2", _.Count.ToString());
+
+            var arg = _[0];
+
+            if (arg.Type() != ObjectType.ARRAY_OBJ)
+            {
+                return NewError("argument to `push` must be ARRAY, got {0}", arg.Type());
+            }
+
+            var elements = new List<IObject>(((_Array)arg).Elements);
+            elements.Add(_[1]);
+
+            return new _Array(elements);
+        }));
+
     }
 
     public IObject Eval(INode node, Object.Environment env)
