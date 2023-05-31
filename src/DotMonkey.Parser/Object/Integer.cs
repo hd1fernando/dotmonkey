@@ -14,4 +14,13 @@ public struct Integer : IObject
     public string Inspect() => Value.ToString();
 
     public string Type() => ObjectType.INTERGER_OBJ;
+
+    public HashKey HashKey()
+    {
+        return new HashKey
+        {
+            Type = Type(),
+            Value = (ulong)Value
+        };
+    }
 }

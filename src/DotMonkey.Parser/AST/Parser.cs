@@ -50,6 +50,7 @@ public class Parser
         RegisterPrefix(Constants.FUNCTION, ParserFunctionLiteral);
         RegisterPrefix(Constants.STRING, () => new StringLiteral(CurrentToken, CurrentToken.Literal));
         RegisterPrefix(Constants.LBRACKET, ParserArrayLiteral);
+        RegisterPrefix(Constants.LBRACE, ParserHasLiteral);
 
         RegisterInfix(Constants.PLUS, ParserInfixExpression);
         RegisterInfix(Constants.MINUS, ParserInfixExpression);
@@ -181,6 +182,33 @@ public class Parser
         literal.Body = ParserBlockStatement();
 
         return literal;
+    }
+
+    private IExpression ParserHasLiteral()
+    {
+        var hash = new HashLiteral(CurrentToken);
+
+        while (PeekTokenIs(Constants.RBRACE) == false)
+        {
+            NextToken();
+            var key = ParserExpression(Precedences.LOWEST);
+
+            if (ExpectedPeek(Constants.COLON) == false)
+                return null;
+
+            NextToken();
+            var value = ParserExpression(Precedences.LOWEST);
+
+            hash.AddToPair(key, value);
+
+            if (PeekTokenIs(Constants.RBRACE) == false && ExpectedPeek(Constants.COMMA) == false)
+                return null;
+        }
+
+        if (ExpectedPeek(Constants.RBRACE) == false)
+            return null;
+
+        return hash;
     }
 
     private IExpression ParserArrayLiteral()

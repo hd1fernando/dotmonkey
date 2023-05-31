@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Text;
 
 namespace DotMonkey.Parser.Object;
 
@@ -25,5 +26,14 @@ public struct _Boolean : IObject
         var o = (_Boolean)obj;
 
         return o.Value == Value;
+    }
+
+    public HashKey HashKey()
+    {
+        return new HashKey
+        {
+            Type = Type(),
+            Value = (ulong)(Value ? 1 : 0)
+        };
     }
 }

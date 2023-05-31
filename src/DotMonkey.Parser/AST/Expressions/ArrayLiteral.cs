@@ -26,7 +26,7 @@ public class ArrayLiteral : IExpression
         var sb = new StringBuilder();
         List<string> elements = new();
 
-        foreach(var element in Elements)
+        foreach (var element in Elements)
         {
             elements.Add(element.String());
         }

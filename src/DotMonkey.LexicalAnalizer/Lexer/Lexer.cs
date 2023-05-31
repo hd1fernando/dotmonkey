@@ -45,6 +45,7 @@ public class Lexer
             '"' => new Token(Constants.STRING, ReadString()),
             '[' => new Token(Constants.LBRACKET, _charUnderExamination.ToString()),
             ']' => new Token(Constants.RBRACKET, _charUnderExamination.ToString()),
+            ':' => new Token(Constants.COLON, _charUnderExamination.ToString()),
             _ => DefautlPattern(token)
         };
 

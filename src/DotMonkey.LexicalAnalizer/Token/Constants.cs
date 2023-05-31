@@ -28,6 +28,8 @@
         public const string COMMA = ",";
         public const string SEMICOLON = ";";
 
+        public const string COLON = ":";
+
         public const string LPARENT = "(";
         public const string RPARENT = ")";
         public const string LBRACE = "{";

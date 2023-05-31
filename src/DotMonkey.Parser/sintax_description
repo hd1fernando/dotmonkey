@@ -6,6 +6,7 @@ The AST consists of Nodes that are connectet wich other. Some nodes implments IS
 AST:
 <steatment> := let | return
 string := "<sequence of characteres>"
+hash := {<expression>:<expression>, ...}
 
 let <identifer> = <expression>;
 return <expression>;
