@@ -6,7 +6,7 @@ using Xunit;
 
 namespace DotMonkey.ParserTest;
 
-public class ArrayLiteralsExpression
+public class ArrayLiteralsExpressionTest
 {
     [Fact(DisplayName = "Array Literal")]
     public void TestParsingArrayLiterals()

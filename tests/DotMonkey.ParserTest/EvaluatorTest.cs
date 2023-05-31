@@ -293,6 +293,20 @@ public class EvaluatorTest
     }
 
 
+    [Fact(DisplayName = "String hash key")]
+    public void TestStringHashKey()
+    {
+        var hello1 = new _String("Hello World");
+        var hello2 = new _String("Hello World");
+        var diff1 = new _String("My name is johnny");
+        var diff2 = new _String("My name is johnny");
+
+        hello1.HashKey().Should().Be(hello2.HashKey());
+        diff1.HashKey().Should().Be(diff1.HashKey());
+        hello1.HashKey().Should().NotBe(diff1.HashKey()); 
+    }
+
+
     private void TestNullObject(IObject evalueated)
     {
         evalueated.Should().BeOfType<NULL>();
