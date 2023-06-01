@@ -101,6 +101,15 @@ public class Evaluator
 
             return new _Array(elements);
         }));
+        _builtins.Add("puts", new((_) =>
+        {
+            foreach (var arg in _)
+            {
+                Console.WriteLine(arg.Inspect());
+            }
+
+            return NULL;
+        }));
 
     }
 
