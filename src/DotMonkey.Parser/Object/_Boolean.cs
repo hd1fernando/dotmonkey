@@ -3,7 +3,7 @@ using System.Text;
 
 namespace DotMonkey.Parser.Object;
 
-public struct _Boolean : IObject
+public struct _Boolean : IObject, IHashTable
 {
     public bool Value { get; private set; }
 

@@ -14,6 +14,7 @@ public struct ObjectType
     public const string STRING_OBJ = "STRING";
     public const string BUILTIN_OBJ = "BUILTIN";
     public const string ARRAY_OBJ = "ARRAY";
+    public const string HASH_OBJ = "HASH";
 
     public delegate IObject BuiltInFunction(List<IObject> args);
 

@@ -1,6 +1,6 @@
 ﻿namespace DotMonkey.Parser.Object;
 
-public struct Integer : IObject
+public struct Integer : IObject, IHashTable
 {
     public long Value { get; private set; }
 

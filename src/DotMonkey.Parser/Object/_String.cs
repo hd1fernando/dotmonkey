@@ -3,14 +3,7 @@ using System.Text;
 
 namespace DotMonkey.Parser.Object;
 
-public struct HashKey
-{
-    public required ulong Value { get; init; }
-    public required string Type { get; init; }
-
-}
-
-public struct _String : IObject
+public struct _String : IObject, IHashTable
 {
     public string Value { get; init; }
 

@@ -4,6 +4,7 @@ using DotMonkey.Parser.AST.Interfaces;
 using DotMonkey.Parser.AST.Statements;
 using DotMonkey.Parser.Object;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,8 +12,8 @@ namespace DotMonkey.Parser.Eval;
 
 public class Evaluator
 {
-    private static _Boolean TRUE = new _Boolean(true);
-    private static _Boolean FALSE = new _Boolean(false);
+    public static _Boolean TRUE = new _Boolean(true);
+    public static _Boolean FALSE = new _Boolean(false);
     private static NULL NULL = new NULL();
 
     private Dictionary<string, BuiltIn> _builtins = new Dictionary<string, BuiltIn>();
@@ -223,14 +224,55 @@ public class Evaluator
             return EvalIndexExpression(left, index);
         }
 
+        if (node is HashLiteral)
+        {
+            return EvalHashLiteral((node as HashLiteral), env);
+        }
+
         return null;
+    }
+
+    private IObject EvalHashLiteral(HashLiteral node, Object.Environment env)
+    {
+        var pairs = new Dictionary<HashKey, HashPair>();
+
+        foreach (var pair in node.Pairs)
+        {
+            var key = Eval(pair.Key, env);
+            if (IsError(key))
+                return key;
+
+            var hashKey = (IHashTable)key;
+
+            var value = Eval(pair.Value, env);
+            if (IsError(value))
+                return value;
+
+            var hashed = hashKey.HashKey();
+            pairs.Add(hashed, new HashPair { Key = key, Value = value });
+        }
+
+        return new Hash(pairs);
     }
 
     private IObject EvalIndexExpression(IObject left, IObject index)
     {
         if (left.Type() == ObjectType.ARRAY_OBJ && index.Type() == ObjectType.INTERGER_OBJ)
             return EvalArrayIndexExpression(left, index);
+        if (left.Type() == ObjectType.HASH_OBJ)
+            return EvalHashIndexExpression(left, index);
         return NewError("index operator not supported: {0}", left.Type());
+    }
+
+    private IObject EvalHashIndexExpression(IObject left, IObject index)
+    {
+        var hashObj = (Hash)left;
+        var key = (IHashTable)index;
+        if (hashObj.Pair.TryGetValue(key.HashKey(), out var result))
+        {
+            return result.Value;
+        }
+        return NULL;
     }
 
     private IObject EvalArrayIndexExpression(IObject array, IObject index)
